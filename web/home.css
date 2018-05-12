@@ -1,0 +1,13 @@
+﻿body
+{
+    background: #424246;
+    display: grid;
+}
+
+body img
+{
+    height: 300px;
+    width: 300px;
+}
+
+
