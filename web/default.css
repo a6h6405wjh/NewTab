@@ -1,13 +1,54 @@
-﻿body
+﻿:root
 {
-    background: #424246;
-    display: grid;
+    --tile-x: 8;
+    --tile-y: 1;
+    --tile-sq: 70px;
 }
 
-body img
+*
 {
-    height: 300px;
-    width: 300px;
+    box-sizing: border-box;
 }
+
+body
+{
+    background: rgb(48,48,48);
+    /*background: linear-gradient(to right, #424e5a 0%,#544c61 100%);*/
+    height: 100%;
+}
+
+#layout
+{
+    display: grid;
+    grid-template-columns: 16.66% 66.66% 16.66%;
+    grid-template-rows: 16.66% 66.66% 16.66%;
+    justify-items: center;
+}
+
+#tiles
+{
+    grid-column: 2 / 2;
+}
+
+.tile
+{
+    overflow: hidden;
+    margin: .25rem;
+}
+
+.tile img
+{
+    box-sizing: content-box;
+    width: var(--tile-sq);
+    height: var(--tile-sq);
+}
+
+.tile img:hover
+{
+    width: +10%;
+    height: +10%;
+    transition: width, height 0.1s ease-in;
+}
+
 
 

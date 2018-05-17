@@ -1,13 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<tiles>
-  <tile name="youtube">
-    <a href="youtube.com">
-      <img src=""/>
-    </a>
-  </tile>
-  <tile name="youtube">
-    <a href="youtube.com">
-      <img src=""/>
-    </a>
-  </tile>
-</tiles>
+<ntp:tiles  xmlns:ntp="http://jamie.norris/newtabpage"
+            xmlns="http://www.w3.org/1999/xhtml">
+  <ntp:tile name="youtube">
+    <a class="tile" href="https://www.google.com"><img src="img/google.png"/></a>
+  </ntp:tile>
+  <ntp:tile name="youtube">
+    <a class="tile" href="https://www.youtube.com"><img src="img/youtube.png"/></a>
+  </ntp:tile>
+  <ntp:tile name="facebook">
+    <a class="tile" href="https://www.facebook.com"><img src="img/facebook.png"/></a>
+  </ntp:tile>
+  <ntp:tile name="trademe">
+    <a class="tile" href="https://www.trademe.co.nz"><img src="img/trademe.jpg"/></a>
+  </ntp:tile>
+  <ntp:tile name="netflix">
+    <a class="tile" href="https://www.netflix.com"><img src="img/netflix2.png"/></a>
+  </ntp:tile>
+  <ntp:tile name="movie">
+    <a class="tile" href="https://www4.fmovies.se/movies?page=1"><img src="img/movie.png"/></a>
+  </ntp:tile>
+  <ntp:tile name="imdb">
+    <a class="tile" href="https://www.imdb.com"><img src="img/imdb.png"/></a>
+  </ntp:tile>
+</ntp:tiles>
