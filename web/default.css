@@ -3,6 +3,8 @@
     --tile-x: 8;
     --tile-y: 1;
     --tile-sq: 70px;
+    --clr-light: rgb(222,222,222);
+    --clr-accent: rgb(0, 208, 255);
 }
 
 *
@@ -15,6 +17,7 @@ body
     background: rgb(48,48,48);
     /*background: linear-gradient(to right, #424e5a 0%,#544c61 100%);*/
     height: 100%;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 #layout
@@ -45,10 +48,51 @@ body
 
 .tile img:hover
 {
-    width: +10%;
-    height: +10%;
     transition: width, height 0.1s ease-in;
 }
 
+#tabs
+{
+    grid-column: 2 / 2;
+    grid-row: 2 / 2;
+    justify-self: stretch;
+}
 
+#tabs > ul
+{
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+#tabs li
+{
+    /* Add fade */
+    display: inline-block;
+    padding: 1em;
+    color: var(--clr-light);
+    cursor: pointer;
+    background: none;
+    transition: background .25s ease-in-out;
+}
+
+#tabs li.tab-active
+{
+    background: rgba(0,0,0,0.3);
+    border-radius: .3em .3em 0 0;
+    color: var(--clr-accent);
+}
+
+[id*="tab-"]
+{
+    display: none;
+    background: rgba(0,0,0,0.3);
+    color: var(--clr-light);
+    padding: 1em;
+}
+
+#tabs li:not(.tab-active):not(:first-child)
+{
+    border-left: 2px solid rgba(0,0,0,.3);
+}
 
