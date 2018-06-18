@@ -1,0 +1,42 @@
+﻿:root
+{
+    --tile-x: 8;
+    --tile-y: 1;
+    --tile-sq: 70px;
+    --clr-light: rgb(222, 222, 222);
+    --clr-accent: rgb(0, 208, 255);
+    --clr-bg: rgb(255,255,255,0.03);
+    --dim-rad: 0;
+}
+
+*
+{
+    box-sizing: border-box;
+}
+
+html, body
+{
+    margin: 0;
+    height: 100%;
+}
+
+body
+{
+    background: linear-gradient(to right, #303840, #544c61);
+    font-family: 'Open Sans';
+}
+
+#layout
+{
+    display: grid;
+    grid-template-columns: 16.66% 66.66% 16.66%;
+    grid-template-rows: 16.66% 66.66% 16.66%;
+    justify-items: center;
+}
+
+.tile img
+{
+    box-sizing: content-box;
+    width: var(--tile-sq);
+    height: var(--tile-sq);
+}

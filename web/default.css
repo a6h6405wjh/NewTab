@@ -3,96 +3,122 @@
     --tile-x: 8;
     --tile-y: 1;
     --tile-sq: 70px;
-    --clr-light: rgb(222,222,222);
+    --clr-light: rgb(222, 222, 222);
     --clr-accent: rgb(0, 208, 255);
+    --clr-bg: rgba(255,255,255,0.05);
+    --clr-shadow: rgba(0,0,0,.5);
+    --dim-rad: 0;
 }
 
-*
-{
-    box-sizing: border-box;
-}
+    *
+    {
+        box-sizing: border-box;
+    }
 
-body
-{
-    background: rgb(48,48,48);
-    /*background: linear-gradient(to right, #424e5a 0%,#544c61 100%);*/
-    height: 100%;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
+    html, body
+    {
+        margin: 0;
+        height: 100%;
+    }
 
-#layout
-{
-    display: grid;
-    grid-template-columns: 16.66% 66.66% 16.66%;
-    grid-template-rows: 16.66% 66.66% 16.66%;
-    justify-items: center;
-}
+    body
+    {
+        background: rgb(48,56,64);
+        /*background: linear-gradient(to right, #303840, #544c61);*/
+        font-family: 'Open Sans';
+        display: grid;
+        grid-template-columns: 16.66vw 66.66vw 16.66vw;
+        grid-template-rows: 10vh 80vh 10vh;
+    }
 
-#tiles
-{
-    grid-column: 2 / 2;
-}
+    #content
+    {
+        grid-column: 2 / 2;
+        grid-row: 2/2;
+        justify-content: center;
+    }
 
-.tile
-{
-    overflow: hidden;
-    margin: .25rem;
-}
+    #tiles
+    {
+        text-align: center;
+    }
 
-.tile img
-{
-    box-sizing: content-box;
-    width: var(--tile-sq);
-    height: var(--tile-sq);
-}
 
-.tile img:hover
-{
-    transition: width, height 0.1s ease-in;
-}
+    .tile
+    {
+        overflow: hidden;
+        padding: .5vh;
+        overflow: hidden;
+        display: inline-block;
+        transition: background 0.3s ease-in-out;
+        border-radius: var(--dim-rad);
+    }
 
-#tabs
-{
-    grid-column: 2 / 2;
-    grid-row: 2 / 2;
-    justify-self: stretch;
-}
+    .tile:hover
+    {
+        background: var(--clr-bg);
+    }
 
-#tabs > ul
-{
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: 0;
-}
+    .tile:active
+    {
+        transition: background 0.1s ease-out;
+        background: rgba(0,0,0,0.1);
+    }
 
-#tabs li
-{
-    /* Add fade */
-    display: inline-block;
-    padding: 1em;
-    color: var(--clr-light);
-    cursor: pointer;
-    background: none;
-    transition: background .25s ease-in-out;
-}
+    .tile img
+    {
+        box-sizing: content-box;
+        width: var(--tile-sq);
+        height: var(--tile-sq);
+    }
 
-#tabs li.tab-active
-{
-    background: rgba(0,0,0,0.3);
-    border-radius: .3em .3em 0 0;
-    color: var(--clr-accent);
-}
+    #tabs
+    {
+        height: calc(80vh - var(--tile-sq));
+    }
 
-[id*="tab-"]
-{
-    display: none;
-    background: rgba(0,0,0,0.3);
-    color: var(--clr-light);
-    padding: 1em;
-}
+    #tabs > ul
+    {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 0;
+    }
 
-#tabs li:not(.tab-active):not(:first-child)
-{
-    border-left: 2px solid rgba(0,0,0,.3);
-}
+    #tabs li
+    {
+        /* Add fade */
+        display: inline-block;
+        padding: 1rem 1.25rem;
+        color: rgba(255,255,255,0.3);
+        cursor: pointer;
+        background: none;
+        letter-spacing: 0.1rem;
+        user-select: none;
+        transition: color 0.3s ease-in-out;
+    }
+
+    #tabs li:hover
+    {
+        color: rgb(255,255,255);
+        transition: background 0.3s ease-in-out;
+        background: rgba(255,255,255,0.02);
+    }
+
+
+    #tabs li.tab-active
+    {
+        background: var(--clr-bg);
+        border-radius: var(--dim-rad) var(--dim-rad) 0 0;
+        color: rgb(255,255,255);
+    }
+
+    #tabs > div
+    {
+        display: none;
+        background: var(--clr-bg);
+        color: var(--clr-light);
+        padding: 1.25em;
+        height: calc(80vh - var(--tile-sq) - 3rem);
+    }
+
 

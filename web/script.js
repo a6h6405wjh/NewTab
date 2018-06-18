@@ -37,51 +37,48 @@ ntp.bookmarks = function ()
 }
 
 
-ntp.tabs = function (active)
+ntp.tabs = function (e)
 {
-    // Fix this, used because of stupid this/inline script grr chrome security crap.
-    active = active.currentTarget;
+    
+    /*  Tab switching. */
 
-    /*
-     Tab switching.
-     req. data-id attribute on li that is child of tabs.
-    */
+    var tab, id;
 
-    var tab, tabId;
-    var tabLastId = localStorage.getItem("tab");
-    var tabs = document.getElementById("tabs").children[0].children; // Li's.
+    var lastId = parseInt(localStorage.getItem("tabLastId"));
+    var tabs = document.getElementById("tabs").children;
 
-    for (var i = 0; i < tabs.length; i++)
+    // Not fired from onclick.
+    if (e == null)
     {
-        tab = tabs[i];
+        // No last tab.
+        if (isNaN(lastId)) lastId = 0;
 
-        tabId = tab.getAttribute("data-tab");
-
-        if (active == null && tabId == tabLastId)
+        tabs[0].children[lastId].classList.add("tab-active");
+        tabs[lastId + 1].style.display = "block";
+    }
+    else
+    {
+        // Loop li's.
+        for (var i = 0; i < tabs[0].children.length; i++)
         {
-                active = tabs[i]
-        }
+            tab = tabs[0].children[i];
 
-        if (tab != active)
-        {
-            // Hide data.
-            document.getElementById(tabId).style.display = "none";
-
-            // Inactive.
-            tab.classList.remove("tab-active");
-        }
-        else
-        {
-            // Show data.
-            document.getElementById(tabId).style.display = "block";
-
-            // Active.
-            tab.classList.add("tab-active");
-
-            // Save tab.
-            localStorage.setItem("tab", tabId);
+            // Active tab.
+            if (tab == e.target)
+            {
+                tab.classList.add("tab-active");
+                tabs[i + 1].style.display = "block";
+                localStorage.setItem("tabLastId", i);
+            }
+            // Inactive tab.
+            else
+            {
+                tab.classList.remove("tab-active");
+                tabs[i + 1].style.display = "none";
+            }
         }
     }
+   
 }
 
 ntp.init = function ()
@@ -95,7 +92,7 @@ ntp.init = function ()
     }
 
     ntp.tiles();
-    ntp.tabs();
+    ntp.tabs(null);
     ntp.bookmarks();
 }
 
