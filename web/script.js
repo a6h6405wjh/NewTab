@@ -33,7 +33,54 @@ ntp.tiles = function ()
 
 ntp.bookmarks = function ()
 {
-    //var bkm = chrome.bookmarks.getTree(function(bkm));
+    var book = chrome.bookmarks.getTree
+        (
+        function (book)
+            {
+                console.log(book);
+
+                var tab = document.getElementById("bookmarks");
+
+                // Bookmarks bar.
+                book = book[0].children[0].children;
+
+                // Bookmarks.
+                for (var i = 0; i < book.length; i++)
+                {
+                    // Outer div.
+                    var div = document.createElement("div");
+                    var anchor = document.createElement("a");
+
+                    anchor.href = "";
+                    div.appendChild(anchor);
+
+                    var label = document.createElement("span");
+                    var img = document.createElement("img");
+
+                    // Link.
+                    if (!book[i].hasOwnProperty("children"))
+                    {
+                        
+                        img.src = "chrome://favicon/size/48/" + book[i].url;
+                        
+                        div.classList += "book-link";
+                    }
+                    // Folder.
+                    else
+                    {
+                        img.src = "img/folder.svg";
+                        div.classList += "book-folder";
+                    }
+
+                    anchor.appendChild(img);
+
+                    // Title.
+                    label.appendChild(document.createTextNode(book[i].title));
+                    anchor.appendChild(label);
+                    tab.appendChild(div);       
+                }
+            }
+        );
 }
 
 

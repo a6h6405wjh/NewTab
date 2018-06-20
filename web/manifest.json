@@ -1,9 +1,10 @@
 {
     "name": "Personal new tab page",
     "description": "Custom new tab page",
-    "permissions": 
-    [
-        "bookmarks"
+    "permissions": [
+        "bookmarks",
+        "topSites",
+        "chrome://favicon/"
     ],
     "version": "0.1",
     "incognito": "split",

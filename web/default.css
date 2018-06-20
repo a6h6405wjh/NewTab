@@ -1,14 +1,19 @@
-﻿:root
-{
-    --tile-x: 8;
-    --tile-y: 1;
-    --tile-sq: 70px;
-    --clr-light: rgb(222, 222, 222);
-    --clr-accent: rgb(0, 208, 255);
-    --clr-bg: rgba(255,255,255,0.05);
-    --clr-shadow: rgba(0,0,0,.5);
-    --dim-rad: 0;
-}
+﻿    
+/* Default page style. */    
+
+    :root
+    {
+        --tile-x: 8;
+        --tile-y: 1;
+        --tile-sq: 70px;
+        --clr-light: rgb(222, 222, 222);
+        --clr-accent: rgb(0, 208, 255);
+        --clr-bg: rgba(255,255,255,0.05);
+        --clr-shadow: rgba(0,0,0,.5);
+        --dim-rad: 0;
+    }
+
+/* ========== Layout */
 
     *
     {
@@ -38,6 +43,9 @@
         justify-content: center;
     }
 
+
+/* ========== Tiles */
+
     #tiles
     {
         text-align: center;
@@ -56,13 +64,13 @@
 
     .tile:hover
     {
-        background: var(--clr-bg);
+        background: rgba(255,255,255,0.02);
     }
 
     .tile:active
     {
         transition: background 0.1s ease-out;
-        background: rgba(0,0,0,0.1);
+        background: var(--clr-bg);
     }
 
     .tile img
@@ -71,6 +79,8 @@
         width: var(--tile-sq);
         height: var(--tile-sq);
     }
+
+/* ========== Tabs */
 
     #tabs
     {
@@ -89,7 +99,7 @@
         /* Add fade */
         display: inline-block;
         padding: 1rem 1.25rem;
-        color: rgba(255,255,255,0.3);
+        color: rgba(255,255,255,0.4);
         cursor: pointer;
         background: none;
         letter-spacing: 0.1rem;
@@ -116,9 +126,48 @@
     {
         display: none;
         background: var(--clr-bg);
-        color: var(--clr-light);
-        padding: 1.25em;
+        color: rgba(255,255,255,0.4);
+        padding: 1.25rem;
         height: calc(80vh - var(--tile-sq) - 3rem);
+    }
+
+/* ========== Bookmarks */
+
+    [class^=book-] /* Folder & Link */
+    {
+        margin: .5rem;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    [class^=book-] a
+    {
+        text-decoration: none;
+        color: rgba(255,255,255,0.8);
+    }
+
+    [class^=book-] span
+    {
+        display: block;
+    }
+
+
+    #bookmarks img
+    {
+        width: 32px;
+        height: 32px;
+        margin-right: .5rem;
+        opacity: .5;
+    }
+
+    [class^=book-] a:hover img
+    {
+        opacity: .75;
+    }
+
+    .book-link span
+    {
+        display: block;
     }
 
 
