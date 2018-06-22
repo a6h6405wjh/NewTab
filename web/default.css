@@ -24,6 +24,8 @@
     {
         margin: 0;
         height: 100%;
+        font-family: 'Open Sans';
+        letter-spacing: .08rem;
     }
 
     body
@@ -64,13 +66,13 @@
 
     .tile:hover
     {
-        background: rgba(255,255,255,0.02);
+        background: var(--clr-bg);
     }
 
     .tile:active
     {
         transition: background 0.1s ease-out;
-        background: var(--clr-bg);
+        background: rgba(255,255,255,0.02);
     }
 
     .tile img
@@ -102,7 +104,6 @@
         color: rgba(255,255,255,0.4);
         cursor: pointer;
         background: none;
-        letter-spacing: 0.1rem;
         user-select: none;
         transition: color 0.3s ease-in-out;
     }
@@ -138,6 +139,9 @@
         margin: .5rem;
         display: inline-block;
         overflow: hidden;
+
+        text-overflow: ellipsis;
+        width: 48px;
     }
 
     [class^=book-] a
