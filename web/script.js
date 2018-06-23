@@ -74,7 +74,7 @@ ntp.bookmarks = function (e)
             {
                 // Decrease folder path.
                 spath = path.slice(0, path.length - 1);
-                title = "..";
+                title = "";
                 img.src = "img/folder-back.svg";
             }
             else
