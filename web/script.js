@@ -31,53 +31,88 @@ ntp.tiles = function ()
     xmlReq.send();
 }
 
-ntp.bookmarks = function ()
+
+ntp.bookmarks = function (e)
 {
+    /*
+     Parses bookmarks. 
+     Path is array of indexes to current folder.
+    */
+
+    var tab = document.getElementById("bookmarks");
+
+    // Set local path.
+    var path = e ? JSON.parse(e.currentTarget["data-path"]) : [0, 0];
+
+    // Empty the div.
+    if (e)
+    {
+        while (tab.firstChild) tab.removeChild(tab.firstChild);
+
+        // Not origin.
+        if (path.length > 2)
+        {
+            appendBook(undefined, true);
+        }
+    }
+
+    // Create and append a bookmark/folder.
+    function appendBook(book, folder)
+    {
+        var div = document.createElement("div");
+        var anchor = document.createElement("a");
+        var label = document.createElement("span");
+        var img = document.createElement("img");
+
+        div.classList += "book";
+
+        if (folder)
+        {
+            var title, spath;
+
+            if (!book)
+            {
+                // Decrease folder path.
+                spath = path.slice(0, path.length - 1);
+                title = "..";
+                img.src = "img/folder-back.svg";
+            }
+            else
+            {
+                // Increase folder path.
+                spath = path.toString() + "," + book.index;
+                title = book.title;
+                img.src = "img/folder.svg";
+            }
+
+            div['data-path'] = "[" + spath + "]";
+            div.addEventListener("click", ntp.bookmarks);
+        }
+        else
+        {
+            title = book.title;
+            img.src = "chrome://favicon/size/48/" + book.url;
+            anchor.href = book.url;
+        }
+
+        label.appendChild(document.createTextNode(title));
+        anchor.appendChild(img);
+        anchor.appendChild(label);
+        div.appendChild(anchor);
+        tab.appendChild(div);       
+    }
+
     var book = chrome.bookmarks.getTree
         (
         function (book)
             {
-                console.log(book);
-
-                var tab = document.getElementById("bookmarks");
-
-                // Bookmarks bar.
-                book = book[0].children[0].children;
+                // Traverse the collection.
+                for (var n = 0; n < path.length; n++) book = book[path[n]].children;
 
                 // Bookmarks.
                 for (var i = 0; i < book.length; i++)
                 {
-                    // Outer div.
-                    var div = document.createElement("div");
-                    var anchor = document.createElement("a");
-
-                    anchor.href = "";
-                    div.appendChild(anchor);
-
-                    var label = document.createElement("span");
-                    var img = document.createElement("img");
-
-                    // Link.
-                    if (!book[i].hasOwnProperty("children"))
-                    {
-                        
-                        img.src = "chrome://favicon/size/48/" + book[i].url;
-                        
-                        div.classList += "book-link";
-                    }
-                    // Folder.
-                    else
-                    {
-                        img.src = "img/folder.svg";
-                        div.classList += "book-folder";
-                    }
-
-                    anchor.appendChild(img);
-
-                    // Title.
-                    label.appendChild(document.createTextNode(book[i].title));
-                    anchor.appendChild(label);
-                    tab.appendChild(div);       
+                    appendBook(book[i], book[i].hasOwnProperty("children"));
                 }
             }
         );
@@ -101,7 +136,7 @@ ntp.tabs = function (e)
         if (isNaN(lastId)) lastId = 0;
 
         tabs[0].children[lastId].classList.add("tab-active");
-        tabs[lastId + 1].style.display = "block";
+        tabs[lastId + 1].style.display = "flex";
     }
     else
     {
@@ -114,7 +149,7 @@ ntp.tabs = function (e)
             if (tab == e.target)
             {
                 tab.classList.add("tab-active");
-                tabs[i + 1].style.display = "block";
+                tabs[i + 1].style.display = "flex";
                 localStorage.setItem("tabLastId", i);
             }
             // Inactive tab.

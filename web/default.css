@@ -1,177 +1,191 @@
 ﻿    
 /* Default page style. */    
 
-    :root
-    {
-        --tile-x: 8;
-        --tile-y: 1;
-        --tile-sq: 70px;
-        --clr-light: rgb(222, 222, 222);
-        --clr-accent: rgb(0, 208, 255);
-        --clr-bg: rgba(255,255,255,0.05);
-        --clr-shadow: rgba(0,0,0,.5);
-        --dim-rad: 0;
-    }
+:root
+{
+    --tile-x: 8;
+    --tile-y: 1;
+    --tile-sq: 70px;
+    --clr-light: rgb(222, 222, 222);
+    --clr-accent: rgb(0, 208, 255);
+    --clr-bg: rgba(255,255,255,0.05);
+    --clr-shadow: rgba(0,0,0,.5);
+    --dim-rad: 0;
+}
 
 /* ========== Layout */
 
-    *
-    {
-        box-sizing: border-box;
-    }
+*
+{
+    box-sizing: border-box;
+}
 
-    html, body
-    {
-        margin: 0;
-        height: 100%;
-        font-family: 'Open Sans';
-        letter-spacing: .08rem;
-    }
+html, body
+{
+    margin: 0;
+    height: 100%;
+    font-family: 'Open Sans';
+    letter-spacing: .08rem;
+}
 
-    body
-    {
-        background: rgb(48,56,64);
-        /*background: linear-gradient(to right, #303840, #544c61);*/
-        font-family: 'Open Sans';
-        display: grid;
-        grid-template-columns: 16.66vw 66.66vw 16.66vw;
-        grid-template-rows: 10vh 80vh 10vh;
-    }
+body
+{
+    background: rgb(48,56,64);
+    /*background: linear-gradient(to right, #303840, #544c61);*/
+    font-family: 'Open Sans';
+    display: grid;
+    grid-template-columns: 16.66vw 66.66vw 16.66vw;
+    grid-template-rows: 10vh 80vh 10vh;
+}
 
-    #content
-    {
-        grid-column: 2 / 2;
-        grid-row: 2/2;
-        justify-content: center;
-    }
+#content
+{
+    grid-column: 2 / 2;
+    grid-row: 2/2;
+    justify-content: center;
+}
 
 
 /* ========== Tiles */
 
-    #tiles
-    {
-        text-align: center;
-    }
+#tiles
+{
+    text-align: center;
+}
 
 
-    .tile
-    {
-        overflow: hidden;
-        padding: .5vh;
-        overflow: hidden;
-        display: inline-block;
-        transition: background 0.3s ease-in-out;
-        border-radius: var(--dim-rad);
-    }
+.tile
+{
+    overflow: hidden;
+    padding: .5vh;
+    overflow: hidden;
+    display: inline-block;
+    transition: background 0.3s ease-in-out;
+    border-radius: var(--dim-rad);
+}
 
-    .tile:hover
-    {
-        background: var(--clr-bg);
-    }
+.tile:hover
+{
+    background: var(--clr-bg);
+}
 
-    .tile:active
-    {
-        transition: background 0.1s ease-out;
-        background: rgba(255,255,255,0.02);
-    }
+.tile:active
+{
+    transition: background 0.1s ease-out;
+    background: rgba(255,255,255,0.02);
+}
 
-    .tile img
-    {
-        box-sizing: content-box;
-        width: var(--tile-sq);
-        height: var(--tile-sq);
-    }
+.tile img
+{
+    box-sizing: content-box;
+    width: var(--tile-sq);
+    height: var(--tile-sq);
+}
 
 /* ========== Tabs */
 
-    #tabs
-    {
-        height: calc(80vh - var(--tile-sq));
-    }
+#tabs
+{
+    height: calc(80vh - var(--tile-sq));
+}
 
-    #tabs > ul
-    {
-        list-style-type: none;
-        padding: 0;
-        margin-bottom: 0;
-    }
+#tabs > ul
+{
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 0;
+}
 
-    #tabs li
-    {
-        /* Add fade */
-        display: inline-block;
-        padding: 1rem 1.25rem;
-        color: rgba(255,255,255,0.4);
-        cursor: pointer;
-        background: none;
-        user-select: none;
-        transition: color 0.3s ease-in-out;
-    }
+#tabs li
+{
+    /* Add fade */
+    display: inline-block;
+    padding: 1rem 1.25rem;
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    background: none;
+    user-select: none;
+    transition: color 0.3s ease-in-out;
+}
 
-    #tabs li:hover
-    {
-        color: rgb(255,255,255);
-        transition: background 0.3s ease-in-out;
-        background: rgba(255,255,255,0.02);
-    }
+#tabs li:hover
+{
+    color: rgb(255,255,255);
+    transition: background 0.3s ease-in-out;
+    background: rgba(255,255,255,0.02);
+}
 
 
-    #tabs li.tab-active
-    {
-        background: var(--clr-bg);
-        border-radius: var(--dim-rad) var(--dim-rad) 0 0;
-        color: rgb(255,255,255);
-    }
+#tabs li.tab-active
+{
+    background: var(--clr-bg);
+    border-radius: var(--dim-rad) var(--dim-rad) 0 0;
+    color: rgb(255,255,255);
+}
 
-    #tabs > div
-    {
-        display: none;
-        background: var(--clr-bg);
-        color: rgba(255,255,255,0.4);
-        padding: 1.25rem;
-        height: calc(80vh - var(--tile-sq) - 3rem);
-    }
+#tabs > div
+{
+    display: none;
+    background: var(--clr-bg);
+    color: rgba(255,255,255,0.4);
+    padding: 1.25rem;
+    height: calc(80vh - var(--tile-sq) - 3rem);
+}
 
 /* ========== Bookmarks */
 
-    [class^=book-] /* Folder & Link */
-    {
-        margin: .5rem;
-        display: inline-block;
-        overflow: hidden;
+#bookmarks
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+}
 
-        text-overflow: ellipsis;
-        width: 48px;
-    }
+.book
+{
+    margin: .25rem;
+    padding: 1rem .5rem;
+    display: inline-block;
+    width: calc(48px + 2.5rem);
+    /*height: calc(48px + 2.5rem);*/
+    text-align: center;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    flex: 1 1 content;
+}
 
-    [class^=book-] a
-    {
-        text-decoration: none;
-        color: rgba(255,255,255,0.8);
-    }
+.book:hover
+{
+    background: rgba(255,255,255,0.05);
+    transition: background 0.1s ease-out;
+}
 
-    [class^=book-] span
-    {
-        display: block;
-    }
+.book a
+{
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    color: rgba(255,255,255,0.8);
+    min-width: 0;
+    align-self: center;
+}
+
+.book span
+{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3em;
+}
 
 
-    #bookmarks img
-    {
-        width: 32px;
-        height: 32px;
-        margin-right: .5rem;
-        opacity: .5;
-    }
-
-    [class^=book-] a:hover img
-    {
-        opacity: .75;
-    }
-
-    .book-link span
-    {
-        display: block;
-    }
+#bookmarks img
+{
+    width: 48px;
+    height: 48px;
+}
 
 
