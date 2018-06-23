@@ -54,6 +54,8 @@ ntp.bookmarks = function (e)
         {
             appendBook(undefined, true);
         }
+
+        //document.getElementById("tabs").children[0].children[0].innerHTML += e.currentTarget.children[0].children[1].innerHTML;
     }
 
     // Create and append a bookmark/folder.
@@ -72,21 +74,21 @@ ntp.bookmarks = function (e)
 
             if (!book)
             {
-                // Decrease folder path.
-                spath = path.slice(0, path.length - 1);
-                title = "";
+                // Decrease folder depth path, to parent.
+                div['data-path'] = "[" + path.slice(0, path.length - 1) + "]";
+                title = "Back";
                 img.src = "img/folder-back.svg";
             }
             else
             {
-                // Increase folder path.
-                spath = path.toString() + "," + book.index;
+                // Increase folder depth path, to index of book.
+                div['data-path'] = "[" + path + "," + book.index + "]";
                 title = book.title;
                 img.src = "img/folder.svg";
             }
 
-            div['data-path'] = "[" + spath + "]";
             div.addEventListener("click", ntp.bookmarks);
+            div.oncontextmenu = function () { return false; };
         }
         else
         {
@@ -151,6 +153,7 @@ ntp.tabs = function (e)
                 tab.classList.add("tab-active");
                 tabs[i + 1].style.display = "flex";
                 localStorage.setItem("tabLastId", i);
+
             }
             // Inactive tab.
             else
@@ -176,6 +179,8 @@ ntp.init = function ()
     ntp.tiles();
     ntp.tabs(null);
     ntp.bookmarks();
+
+    document.getElementById("bookmarks-link").addEventListener("click", ntp.bookmarks);
 }
 
 window.onload = ntp.init;

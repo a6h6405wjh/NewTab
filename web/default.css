@@ -148,19 +148,24 @@ body
     padding: 1rem .5rem;
     display: inline-block;
     width: calc(48px + 2.5rem);
-    /*height: calc(48px + 2.5rem);*/
     text-align: center;
     display: flex;
     align-items: center;
     align-content: center;
     justify-content: center;
-    flex: 1 1 content;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
 }
 
 .book:hover
 {
     background: rgba(255,255,255,0.05);
+}
+
+.book:active
+{
     transition: background 0.1s ease-out;
+    background: rgba(255,255,255,0.02);
 }
 
 .book a
@@ -168,9 +173,15 @@ body
     display: block;
     overflow: hidden;
     text-decoration: none;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.6);
     min-width: 0;
     align-self: center;
+    transition: color 0.3s ease-in-out;
+}
+
+.book:hover a
+{
+    color: rgba(255,255,255,1);
 }
 
 .book span
