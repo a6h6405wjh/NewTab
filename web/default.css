@@ -97,7 +97,7 @@ body
 
 /* ========== Bookmarks */
 
-#bookmarks
+#bookmarks-bar
 {
     display: flex;
     flex-wrap: wrap;

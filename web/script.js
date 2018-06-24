@@ -13,20 +13,35 @@ ntp.bookmarks = function (e)
          Path is array of indexes to current folder.
     */
 
-    var tab = document.getElementById("bookmarks");
+    var tab = document.getElementById("bookmarks-bar");
 
-    // Set local path.
-    var path = e ? JSON.parse(e.currentTarget["data-path"]) : [0, 0];
+    // Default path.
+    var path = [0, 0];
 
-    // Empty the div.
+    // On click.
     if (e)
     {
+        // Has path.
+        if (e.currentTarget.hasOwnProperty("data-path"))
+        {
+            path = JSON.parse(e.currentTarget["data-path"])
+        }
+
+        // Remove previous path contents.
         while (tab.firstChild) tab.removeChild(tab.firstChild);
 
         // Not origin.
         if (path.length > 2)
         {
-            appendBook(undefined, true);
+            //document.getElementById("bookmarks-link").
+        }
+
+        // TODO: Remove old breadcrumbs.
+
+        for (var x = 2; x < path.length; x++)
+        {
+            // TODO: Add each breadcrumb.
+
         }
 
         //document.getElementById("tabs").children[0].children[0].innerHTML += e.currentTarget.children[0].children[1].innerHTML;
