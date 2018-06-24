@@ -5,38 +5,12 @@ var ntp = ntp ||
     {
     };
 
-ntp.tiles = function ()
-{
-    // Read images from xml.
-    var xmlReq = new XMLHttpRequest();
-
-    xmlReq.onreadystatechange = function ()
-    {
-        if (this.readyState == 4 && this.status == 200)
-        {
-            var xml = xmlReq.responseXML;
-
-            var tiles = xml.getElementsByTagName("ntp:tile");
-
-            var container = document.getElementById("tiles");
-
-            for (var i = 0; i < tiles.length; i++)
-            {
-                container.innerHTML += tiles[i].innerHTML;
-            }
-        }
-    }
-
-    xmlReq.open("GET", "tiles.xml", true);
-    xmlReq.send();
-}
-
 
 ntp.bookmarks = function (e)
 {
     /*
-     Parses bookmarks. 
-     Path is array of indexes to current folder.
+         Parses bookmarks. 
+         Path is array of indexes to current folder.
     */
 
     var tab = document.getElementById("bookmarks");
@@ -121,66 +95,71 @@ ntp.bookmarks = function (e)
 }
 
 
+// Tab switching event.
 ntp.tabs = function (e)
 {
-    
-    /*  Tab switching. */
-
-    var tab, id;
-
-    var lastId = parseInt(localStorage.getItem("tabLastId"));
     var tabs = document.getElementById("tabs").children;
+    console.log(tabs);
+    var li = tabs[0].children;
+    var div = tabs[1].children;
 
-    // Not fired from onclick.
-    if (e == null)
+    function setActive(i)
     {
-        // No last tab.
-        if (isNaN(lastId)) lastId = 0;
+        li[i].classList.add("tab-active");
+        div[i].style.display = "flex";
+        localStorage.setItem("lastTabId", i);
+    }
 
-        tabs[0].children[lastId].classList.add("tab-active");
-        tabs[lastId + 1].style.display = "flex";
+    function setInactive(i)
+    {
+        li[i].classList.remove("tab-active");
+        div[i].style.display = "none";
+    }
+
+    if (!e)
+    {
+        // Initialize.
+        var lastTabId = parseInt(localStorage.getItem("lastTabId"));
+
+        // No last tab defined.
+        if (isNaN(lastTabId)) lastTabId = 0;
+
+        setActive(lastTabId);
+
+        for (var i = 0; i < li.length; i++)
+        {
+            li[i].addEventListener("click", ntp.tabs);
+        }
     }
     else
     {
-        // Loop li's.
-        for (var i = 0; i < tabs[0].children.length; i++)
+        for (var i = 0; i < li.length; i++)
         {
-            tab = tabs[0].children[i];
-
-            // Active tab.
-            if (tab == e.target)
+            if (li[i] == e.currentTarget)
             {
-                tab.classList.add("tab-active");
-                tabs[i + 1].style.display = "flex";
-                localStorage.setItem("tabLastId", i);
-
+                setActive(i)
             }
-            // Inactive tab.
             else
             {
-                tab.classList.remove("tab-active");
-                tabs[i + 1].style.display = "none";
+                setInactive(i);
             }
         }
     }
-   
 }
+
 
 ntp.init = function ()
 {
-    // Get tabs.
-    var tabs = document.getElementById("tabs").children[0].children;
-
-    for (var i = 0; i < tabs.length; i++)
-    {
-        tabs[i].addEventListener("click", ntp.tabs);
-    }
-
-    ntp.tiles();
-    ntp.tabs(null);
+    ntp.tabs();
     ntp.bookmarks();
 
-    document.getElementById("bookmarks-link").addEventListener("click", ntp.bookmarks);
+    document.getElementById("bookmarks-link").children[0].addEventListener("click", ntp.bookmarks);
+
+    document.getElementById("bookmarks").oncontextmenu = function ()
+    {
+        alert("implement menu: open bookmark manager");
+        return false;
+    }
 }
 
 window.onload = ntp.init;
