@@ -3,60 +3,85 @@
 // Namespace.
 var ntp = ntp ||
     {
+        path: [0, 0],
+        head: null
     };
 
-ntp.tiles = function ()
+
+ntp.clickCrumb = function (e)
 {
-    // Read images from xml.
-    var xmlReq = new XMLHttpRequest();
+    if (e.currentTarget["data-id"] == ntp.head) return;
 
-    xmlReq.onreadystatechange = function ()
+
+    ntp.head = e.currentTarget["data-id"];
+
+    var crumbs = document.getElementById("bookmarks-link");
+    var crumb;
+
+    // Remove crumbs starting from end.
+    for (var x = crumbs.children.length - 1; x > 0; x--)
     {
-        if (this.readyState == 4 && this.status == 200)
+        crumb = crumbs.children[x];
+
+        // Removed all invalid crumbs?
+        if (!crumb.hasOwnProperty("data-id") | crumb["data-id"] != ntp.head)
         {
-            var xml = xmlReq.responseXML;
-
-            var tiles = xml.getElementsByTagName("ntp:tile");
-
-            var container = document.getElementById("tiles");
-
-            for (var i = 0; i < tiles.length; i++)
-            {
-                container.innerHTML += tiles[i].innerHTML;
-            }
+            crumbs.removeChild(crumb);
+            if (crumb.hasOwnProperty("data-id")) ntp.path.pop();
+        }
+        else
+        {
+            break
         }
     }
 
-    xmlReq.open("GET", "tiles.xml", true);
-    xmlReq.send();
+    ntp.bookmarks();
+}
+
+ntp.addCrumb = function (book)
+{
+    var crumbs = document.getElementById("bookmarks-link");
+    var link = document.createElement("span");
+
+    if (crumbs.children.length != 0)
+    {
+        var separator = document.createElement("span");
+        separator.appendChild(document.createTextNode(" | "));
+        separator.classList.add("separator");
+        crumbs.appendChild(separator);
+    }
+    
+    link.appendChild(document.createTextNode(book.title));
+    link["data-id"] = book.id;
+
+    crumbs.appendChild(link);
+    link.addEventListener("click", ntp.clickCrumb);
+
+    ntp.head = book.id;
 }
 
 
-ntp.bookmarks = function (e)
+ntp.bookmarks = function(e)
 {
     /*
-     Parses bookmarks. 
-     Path is array of indexes to current folder.
+         Parses bookmarks. 
+         Path is array of indexes to current folder.
     */
 
-    var tab = document.getElementById("bookmarks");
+    var tab = document.getElementById("bookmarks-bar");
 
-    // Set local path.
-    var path = e ? JSON.parse(e.currentTarget["data-path"]) : [0, 0];
-
-    // Empty the div.
+    // On click.
     if (e)
     {
-        while (tab.firstChild) tab.removeChild(tab.firstChild);
-
-        // Not origin.
-        if (path.length > 2)
+        // Add index to path.
+        if (e.currentTarget.hasOwnProperty("data-index"))
         {
-            appendBook(undefined, true);
+            ntp.path.push(e.currentTarget["data-index"]);
         }
-
-        //document.getElementById("tabs").children[0].children[0].innerHTML += e.currentTarget.children[0].children[1].innerHTML;
     }
+
+    // Remove contents from previous folder.
+    while (tab.firstChild) tab.removeChild(tab.firstChild);
 
     // Create and append a bookmark/folder.
     function appendBook(book, folder)
@@ -72,20 +97,10 @@ ntp.bookmarks = function (e)
         {
             var title, spath;
 
-            if (!book)
-            {
-                // Decrease folder depth path, to parent.
-                div['data-path'] = "[" + path.slice(0, path.length - 1) + "]";
-                title = "Back";
-                img.src = "img/folder-back.svg";
-            }
-            else
-            {
-                // Increase folder depth path, to index of book.
-                div['data-path'] = "[" + path + "," + book.index + "]";
-                title = book.title;
-                img.src = "img/folder.svg";
-            }
+            // Increase folder depth path, to index of book.
+            div['data-index'] = book.index;
+            title = book.title;
+            img.src = "img/folder.svg";
 
             div.addEventListener("click", ntp.bookmarks);
             div.oncontextmenu = function () { return false; };
@@ -106,12 +121,22 @@ ntp.bookmarks = function (e)
 
     var book = chrome.bookmarks.getTree
         (
-        function (book)
+            function (book)
             {
-                // Traverse the collection.
-                for (var n = 0; n < path.length; n++) book = book[path[n]].children;
+                console.log(book);
 
-                // Bookmarks.
+                var parent;
+
+                // Traverse the folders/path.
+                for (var n = 0; n < ntp.path.length; n++)
+                {
+                    parent = book[ntp.path[n]];
+                    book = parent.children;
+                }
+
+                if (parent.id != ntp.head ) ntp.addCrumb(parent);
+               
+                // Process bookmarks.
                 for (var i = 0; i < book.length; i++)
                 {
                     appendBook(book[i], book[i].hasOwnProperty("children"));
@@ -121,66 +146,70 @@ ntp.bookmarks = function (e)
 }
 
 
+// Tab switching event.
 ntp.tabs = function (e)
 {
-    
-    /*  Tab switching. */
-
-    var tab, id;
-
-    var lastId = parseInt(localStorage.getItem("tabLastId"));
     var tabs = document.getElementById("tabs").children;
+    //console.log(tabs);
+    var li = tabs[0].children;
+    var div = tabs[1].children;
 
-    // Not fired from onclick.
-    if (e == null)
+    function setActive(i)
     {
-        // No last tab.
-        if (isNaN(lastId)) lastId = 0;
+        li[i].classList.add("tab-active");
+        div[i].style.display = "flex";
+        localStorage.setItem("lastTabId", i);
+    }
 
-        tabs[0].children[lastId].classList.add("tab-active");
-        tabs[lastId + 1].style.display = "flex";
+    function setInactive(i)
+    {
+        li[i].classList.remove("tab-active");
+        div[i].style.display = "none";
+    }
+
+    if (!e)
+    {
+        // Initialize.
+        var lastTabId = parseInt(localStorage.getItem("lastTabId"));
+
+        // No last tab defined.
+        if (isNaN(lastTabId)) lastTabId = 0;
+
+        setActive(lastTabId);
+
+        for (var i = 0; i < li.length; i++)
+        {
+            li[i].addEventListener("click", ntp.tabs);
+        }
     }
     else
-    {
-        // Loop li's.
-        for (var i = 0; i < tabs[0].children.length; i++)
+    {   
+        // Set active/inactive tabs.
+        for (var i = 0; i < li.length; i++)
         {
-            tab = tabs[0].children[i];
-
-            // Active tab.
-            if (tab == e.target)
+            if (li[i] == e.currentTarget)
             {
-                tab.classList.add("tab-active");
-                tabs[i + 1].style.display = "flex";
-                localStorage.setItem("tabLastId", i);
-
+                setActive(i)
             }
-            // Inactive tab.
             else
             {
-                tab.classList.remove("tab-active");
-                tabs[i + 1].style.display = "none";
+                setInactive(i);
             }
         }
     }
-   
 }
+
 
 ntp.init = function ()
 {
-    // Get tabs.
-    var tabs = document.getElementById("tabs").children[0].children;
-
-    for (var i = 0; i < tabs.length; i++)
-    {
-        tabs[i].addEventListener("click", ntp.tabs);
-    }
-
-    ntp.tiles();
-    ntp.tabs(null);
+    ntp.tabs();
     ntp.bookmarks();
 
-    document.getElementById("bookmarks-link").addEventListener("click", ntp.bookmarks);
+    document.getElementById("bookmarks").oncontextmenu = function ()
+    {
+        alert("implement menu: open bookmark manager");
+        return false;
+    }
 }
 
 window.onload = ntp.init;
