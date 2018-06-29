@@ -3,10 +3,65 @@
 // Namespace.
 var ntp = ntp ||
     {
+        path: [0, 0],
+        head: null
     };
 
 
-ntp.bookmarks = function (e)
+ntp.clickCrumb = function (e)
+{
+    if (e.currentTarget["data-id"] == ntp.head) return;
+
+
+    ntp.head = e.currentTarget["data-id"];
+
+    var crumbs = document.getElementById("bookmarks-link");
+    var crumb;
+
+    // Remove crumbs starting from end.
+    for (var x = crumbs.children.length - 1; x > 0; x--)
+    {
+        crumb = crumbs.children[x];
+
+        // Removed all invalid crumbs?
+        if (!crumb.hasOwnProperty("data-id") | crumb["data-id"] != ntp.head)
+        {
+            crumbs.removeChild(crumb);
+            if (crumb.hasOwnProperty("data-id")) ntp.path.pop();
+        }
+        else
+        {
+            break
+        }
+    }
+
+    ntp.bookmarks();
+}
+
+ntp.addCrumb = function (book)
+{
+    var crumbs = document.getElementById("bookmarks-link");
+    var link = document.createElement("span");
+
+    if (crumbs.children.length != 0)
+    {
+        var separator = document.createElement("span");
+        separator.appendChild(document.createTextNode(" | "));
+        separator.classList.add("separator");
+        crumbs.appendChild(separator);
+    }
+    
+    link.appendChild(document.createTextNode(book.title));
+    link["data-id"] = book.id;
+
+    crumbs.appendChild(link);
+    link.addEventListener("click", ntp.clickCrumb);
+
+    ntp.head = book.id;
+}
+
+
+ntp.bookmarks = function(e)
 {
     /*
          Parses bookmarks. 
@@ -15,37 +70,18 @@ ntp.bookmarks = function (e)
 
     var tab = document.getElementById("bookmarks-bar");
 
-    // Default path.
-    var path = [0, 0];
-
     // On click.
     if (e)
     {
-        // Has path.
-        if (e.currentTarget.hasOwnProperty("data-path"))
+        // Add index to path.
+        if (e.currentTarget.hasOwnProperty("data-index"))
         {
-            path = JSON.parse(e.currentTarget["data-path"])
+            ntp.path.push(e.currentTarget["data-index"]);
         }
-
-        // Remove previous path contents.
-        while (tab.firstChild) tab.removeChild(tab.firstChild);
-
-        // Not origin.
-        if (path.length > 2)
-        {
-            //document.getElementById("bookmarks-link").
-        }
-
-        // TODO: Remove old breadcrumbs.
-
-        for (var x = 2; x < path.length; x++)
-        {
-            // TODO: Add each breadcrumb.
-
-        }
-
-        //document.getElementById("tabs").children[0].children[0].innerHTML += e.currentTarget.children[0].children[1].innerHTML;
     }
+
+    // Remove contents from previous folder.
+    while (tab.firstChild) tab.removeChild(tab.firstChild);
 
     // Create and append a bookmark/folder.
     function appendBook(book, folder)
@@ -61,20 +97,10 @@ ntp.bookmarks = function (e)
         {
             var title, spath;
 
-            if (!book)
-            {
-                // Decrease folder depth path, to parent.
-                div['data-path'] = "[" + path.slice(0, path.length - 1) + "]";
-                title = "Back";
-                img.src = "img/folder-back.svg";
-            }
-            else
-            {
-                // Increase folder depth path, to index of book.
-                div['data-path'] = "[" + path + "," + book.index + "]";
-                title = book.title;
-                img.src = "img/folder.svg";
-            }
+            // Increase folder depth path, to index of book.
+            div['data-index'] = book.index;
+            title = book.title;
+            img.src = "img/folder.svg";
 
             div.addEventListener("click", ntp.bookmarks);
             div.oncontextmenu = function () { return false; };
@@ -95,12 +121,22 @@ ntp.bookmarks = function (e)
 
     var book = chrome.bookmarks.getTree
         (
-        function (book)
+            function (book)
             {
-                // Traverse the collection.
-                for (var n = 0; n < path.length; n++) book = book[path[n]].children;
+                console.log(book);
 
-                // Bookmarks.
+                var parent;
+
+                // Traverse the folders/path.
+                for (var n = 0; n < ntp.path.length; n++)
+                {
+                    parent = book[ntp.path[n]];
+                    book = parent.children;
+                }
+
+                if (parent.id != ntp.head ) ntp.addCrumb(parent);
+               
+                // Process bookmarks.
                 for (var i = 0; i < book.length; i++)
                 {
                     appendBook(book[i], book[i].hasOwnProperty("children"));
@@ -114,7 +150,7 @@ ntp.bookmarks = function (e)
 ntp.tabs = function (e)
 {
     var tabs = document.getElementById("tabs").children;
-    console.log(tabs);
+    //console.log(tabs);
     var li = tabs[0].children;
     var div = tabs[1].children;
 
@@ -147,7 +183,8 @@ ntp.tabs = function (e)
         }
     }
     else
-    {
+    {   
+        // Set active/inactive tabs.
         for (var i = 0; i < li.length; i++)
         {
             if (li[i] == e.currentTarget)
@@ -167,8 +204,6 @@ ntp.init = function ()
 {
     ntp.tabs();
     ntp.bookmarks();
-
-    document.getElementById("bookmarks-link").children[0].addEventListener("click", ntp.bookmarks);
 
     document.getElementById("bookmarks").oncontextmenu = function ()
     {
