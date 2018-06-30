@@ -31,7 +31,7 @@ ntp.clickCrumb = function (e)
         }
         else
         {
-            break
+            break;
         }
     }
 
