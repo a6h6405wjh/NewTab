@@ -154,6 +154,7 @@ body
     justify-content: center;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
+    user-select: none;
 }
 
  .fade 
