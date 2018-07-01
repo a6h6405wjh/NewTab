@@ -19,7 +19,7 @@ ntp.clickCrumb = function (e)
     var crumb;
 
     // Remove crumbs starting from end.
-    for (var x = crumbs.children.length - 1; x > 0; x--)
+    for (var x = crumbs.children.length - 1; x > 1; x--)
     {
         crumb = crumbs.children[x];
 
@@ -43,7 +43,7 @@ ntp.addCrumb = function (book)
     var crumbs = document.getElementById("bookmarks-crumbs");
     var link = document.createElement("span");
 
-    if (crumbs.children.length != 0)
+    if (crumbs.children.length != 1)
     {
         var separator = document.createElement("span");
         separator.appendChild(document.createTextNode(" | "));
@@ -214,6 +214,10 @@ ntp.init = function ()
     ntp.tabs();
     ntp.bookmarks();
     ntp.bookmarks(undefined, [0, 0, 9], "bookmarks-pinned");
+
+    // Set link click handlers.
+    document.getElementById("bookmarks-crumbs").children[0].addEventListener("click", () => { chrome.tabs.create({ url: "chrome://bookmarks" });});
+
 
     //document.getElementById("bookmarks").oncontextmenu = function ()
     //{
