@@ -214,6 +214,7 @@ ntp.init = function ()
     ntp.tabs();
     ntp.bookmarks();
     ntp.bookmarks(undefined, [0, 0, 9], "bookmarks-pinned");
+    //ntp.bookmarks(undefined, [0, 0, 9], "bookmarks-bar2");
 
     // Set link click handlers.
     document.getElementById("bookmarks-crumbs").children[0].addEventListener("click", () => { chrome.tabs.create({ url: "chrome://bookmarks" });});

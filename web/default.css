@@ -103,7 +103,7 @@ body
     flex-direction: column;
 }
 
-#bookmarks-bar,
+div[id^=bookmarks-bar],
 #bookmarks-pinned
 {
     display: flex;
@@ -153,8 +153,9 @@ body
     /*background: rgb(48,56,64);*/
     background: rgba(255,255,255,0.025);
     margin: 1.25rem 0;
-    padding-bottom: 1.25rem;
-    padding-top: 1.25rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    min-height: 3rem;
     display: flex;
     justify-content: center;
 }
@@ -174,11 +175,11 @@ body
     transition: background 0.3s ease-in-out;
 }
 
- .fade 
- {
-    animation: fade 1s;
-    opacity: 1;
- }
+.fade 
+{
+animation: fade 1s;
+opacity: 1;
+}
 
 @keyframes fade
 {
@@ -202,6 +203,15 @@ body
 {
     transition: background 0.1s ease-out;
     background: rgba(255,255,255,0.02);
+}
+
+#bookmark-navigator
+{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding-bottom: 1rem;
 }
 
 #bookmarks-pinned span
