@@ -6,27 +6,15 @@
     <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 <body>
-    <div id="tabs">
-        <ul>
-            <li id="bookmarks-link">Bookmarks</li>
-            <li>Downloads</li>
-            <li>History</li>
-        </ul>
-        <div>
-            <div id="bookmarks">
-                <div id="bookmarks-pinned"></div>
-                <div id="bookmarks-top"></div>
-                <div id="bookmarks-crumbs"><a class="fright" href="#" onclick="chrome.tabs.create({url:'chrome://bookmarks'});">⋮</a></div>
-                <div id="bookmark-navigator">
-                    <div id="bookmarks-bar"></div>
-                    <!--<div id="bookmarks-bar2"></div>-->
-                    <p>idea, don't discard bars, instead, add scrolling to container, keep all bars</p>
-                </div>
-            </div>
-            <div>Downloads tab.</div>
-            <div>History tab.</div>
+    <div id="content">
+        <div id="bookmarks-pinned"></div>
+        <div id="bookmarks-crumbs"><a class="fright" href="#" onclick="chrome.tabs.create({url:'chrome://bookmarks'});">⋮</a></div>
+        <div id="bookmark-navigator">
+            <div id="bookmarks-bar"></div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="bookmarks.js"></script>
+    <!--<script src="script.js"></script>-->
 </body>
 </html>

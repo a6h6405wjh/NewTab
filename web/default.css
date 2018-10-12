@@ -31,7 +31,6 @@ html, body
 body
 {
     background: rgb(48,56,64);
-    /*background: linear-gradient(to right, #303840, #544c61);*/
     font-family: 'Open Sans';
     display: grid;
     grid-template-columns: 16.66vw 66.66vw 16.66vw;
@@ -41,60 +40,13 @@ body
 
 /* ========== Tabs */
 
-#tabs
+#content
 {
     grid-column: 2 / 2;
     grid-row: 2 / 2;
     justify-content: center;
 }
 
-#tabs > ul
-{
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#tabs li
-{
-    /* Add fade */
-    display: inline-block;
-    padding: 1rem 1.25rem;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    background: none;
-    
-    transition: color 0.3s ease-in-out;
-}
-
-#tabs li:hover
-{
-    color: rgb(255,255,255);
-    transition: background 0.3s ease-in-out;
-    background: rgba(255,255,255,0.02);
-}
-
-
-#tabs li.tab-active
-{
-    background: var(--clr-bg);
-    border-radius: var(--dim-rad) var(--dim-rad) 0 0;
-    color: rgb(255,255,255);
-}
-
-#tabs > div 
-{
-    height: 100%;
-}
-
-#tabs > div > div
-{
-    display: none;
-    background: var(--clr-bg);
-    color: rgba(255,255,255,0.4);
-    padding: 1.25rem;
-    height: calc(100% - 3rem);
-}
 
 /* ========== Bookmarks */
 
@@ -151,7 +103,7 @@ div[id^=bookmarks-bar],
 {
     /*background: rgba(255,255,255,0.025);*/
     /*background: rgb(48,56,64);*/
-    background: rgba(255,255,255,0.025);
+   
     margin: 1.25rem 0;
     padding-bottom: 1rem;
     padding-top: 1rem;

@@ -89,7 +89,7 @@ ntp.bookmarks = function(e, altPath, altDiv)
     }
 
     // Remove contents from previous folder.
-    if(!altPath) while (outDiv.firstChild) outDiv.removeChild(outDiv.firstChild);
+    //if(!altPath) while (outDiv.firstChild) outDiv.removeChild(outDiv.firstChild);
 
     // Create and append a bookmark/folder.
     function appendBook(book, folder)
@@ -128,7 +128,7 @@ ntp.bookmarks = function(e, altPath, altDiv)
         outDiv.appendChild(div);       
     }
 
-    var book = chrome.bookmarks.getTree
+   var book = chrome.bookmarks.getTree
         (
             function (book)
             {
@@ -155,63 +155,8 @@ ntp.bookmarks = function(e, altPath, altDiv)
 }
 
 
-// Tab switching event.
-ntp.tabs = function (e)
-{
-    var tabs = document.getElementById("tabs").children;
-    //console.log(tabs);
-    var li = tabs[0].children;
-    var div = tabs[1].children;
-
-    function setActive(i)
-    {
-        li[i].classList.add("tab-active");
-        div[i].style.display = "flex";
-        localStorage.setItem("lastTabId", i);
-    }
-
-    function setInactive(i)
-    {
-        li[i].classList.remove("tab-active");
-        div[i].style.display = "none";
-    }
-
-    if (!e)
-    {
-        // Initialize.
-        var lastTabId = parseInt(localStorage.getItem("lastTabId"));
-
-        // No last tab defined.
-        if (isNaN(lastTabId)) lastTabId = 0;
-
-        setActive(lastTabId);
-
-        for (var i = 0; i < li.length; i++)
-        {
-            li[i].addEventListener("click", ntp.tabs);
-        }
-    }
-    else
-    {   
-        // Set active/inactive tabs.
-        for (var i = 0; i < li.length; i++)
-        {
-            if (li[i] == e.currentTarget)
-            {
-                setActive(i)
-            }
-            else
-            {
-                setInactive(i);
-            }
-        }
-    }
-}
-
-
 ntp.init = function ()
 {
-    ntp.tabs();
     ntp.bookmarks();
     ntp.bookmarks(undefined, [0, 0, 9], "bookmarks-pinned");
     //ntp.bookmarks(undefined, [0, 0, 9], "bookmarks-bar2");
@@ -225,6 +170,8 @@ ntp.init = function ()
     //    alert("implement menu: open bookmark manager");
     //    return false;
     //}
+
+    
 }
 
 window.onload = ntp.init;
