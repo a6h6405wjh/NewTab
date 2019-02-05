@@ -24,56 +24,54 @@ html, body
 {
     margin: 0;
     height: 100%;
-    font-family: 'Open Sans';
+    font-family: 'Open Sans', sans-serif;
     letter-spacing: .08rem;
 }
 
 body
 {
-    background: rgb(48,56,64);
-    font-family: 'Open Sans';
+    background: hsl(210, 15%, 18%);
+    font-family: 'Open Sans', sans-serif;
     display: grid;
     grid-template-columns: 16.66vw 66.66vw 16.66vw;
-    grid-template-rows: 10vh 80vh 10vh;
+    grid-template-rows: .8fr 1fr;
     user-select: none;
 }
 
-/* ========== Tabs */
-
-#content
+#extras
 {
-    grid-column: 2 / 2;
-    grid-row: 2 / 2;
-    justify-content: center;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+#extras a
+{
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+#cmenu 
+{
+    position: fixed;
+    display: none;
+    background: white;
+    padding: .5rem;
+}
+
+#cmenu a
+{
+    text-decoration: none;
 }
 
 
-/* ========== Bookmarks */
-
-#bookmarks
+#pinned
 {
-    flex-direction: column;
-}
-
-div[id^=bookmarks-bar],
-#bookmarks-pinned
-{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    align-content: flex-start;
-    justify-content: center;
-}
-
-#bookmarks-bar
-{
-    height: 100%;
-    align-items: center !important;
-    align-content: center !important;
-}
-
-#bookmarks-pinned
-{
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
     box-sizing: content-box;
     margin-bottom: 1.25rem;
     margin-top: 1.25rem;
@@ -82,34 +80,25 @@ div[id^=bookmarks-bar],
     overflow: hidden;
 }
 
-.fright
+#navigator,
+#layout
 {
-    position: absolute;
-    right: calc(16.66vw + 1rem);
-    color: rgba(255,255,255,0.6);
-    transition: color 0.3s ease-in-out;
-    text-decoration: none;
-    font-weight: 900;
-    display: block;
-    width: 1.5rem;
+    
+    grid-column: 2;
+    grid-row: 2;
+    flex-direction: column;
 }
 
-.fright:hover
-{
-    color: rgba(255,255,255,1);
-}
 
-#bookmarks-crumbs
+#pinned,
+#navigator > div
 {
-    /*background: rgba(255,255,255,0.025);*/
-    /*background: rgb(48,56,64);*/
-   
-    margin: 1.25rem 0;
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-    min-height: 3rem;
     display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
     justify-content: center;
+    transition: opacity 2s ease-in-out;
 }
 
 .book
@@ -127,22 +116,39 @@ div[id^=bookmarks-bar],
     transition: background 0.3s ease-in-out;
 }
 
-.fade 
+.up
 {
-animation: fade 1s;
-opacity: 1;
+    animation: up .25s ease-out;
 }
 
-@keyframes fade
+.down
+{
+    animation: down .25s ease-out;
+}
+
+@keyframes down
 {
     from
     {
-        opacity: 0
+        opacity: 0;
+        transform: translateY(-10%);
     }
-
     to
     {
-        opacity: 1
+        opacity: 1;
+    }
+}
+
+@keyframes up
+{
+    from
+    {
+        opacity: 0;
+        transform: translateY(10%);
+    }
+    to
+    {
+        opacity: 1;
     }
 }
 
@@ -157,16 +163,15 @@ opacity: 1;
     background: rgba(255,255,255,0.02);
 }
 
-#bookmark-navigator
+#navigator
 {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
     padding-bottom: 1rem;
 }
 
-#bookmarks-pinned span
+#pinned span
 {
     display: none;
 }
@@ -196,40 +201,18 @@ opacity: 1;
     max-height: 3em;
 }
 
+.icon
+{
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: white;
+}
 
-#bookmarks img
+
+#pinned img,
+#navigator img
 {
     width: 48px;
     height: 48px;
 }
-
-
-#bookmarks-crumbs .separator
-{
-    color: rgb(36,42,48);
-    font-weight: 900;
-    margin: 0 .5rem;
-}
-
-#bookmarks-crumbs span:not(.separator):not(:last-child)
-{
-    color: rgba(255, 255, 255, 0.6);
-    transition: color 0.3s ease-in-out;
-}
-
-#bookmarks-crumbs span:last-child
-{
-    color: rgb(255,255,255);
-}
-
-#bookmarks-crumbs span:not(.separator):hover
-{
-    color: rgba(255, 255, 255, 1);
-}
-
-#bookmarks-crumbs span:not(.separator):not(:last-child):hover
-{
-    cursor: pointer;
-}
-
 

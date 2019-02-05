@@ -1,15 +1,20 @@
 {
-    "name": "Personal new tab page",
-    "description": "Custom new tab page",
-    "permissions": [
-        "bookmarks",
-        "topSites",
-        "chrome://favicon/"
-    ],
-    "version": "0.1",
-    "incognito": "split",
-    "chrome_url_overrides": {
-        "newtab": "default.html"
-    },
-    "manifest_version": 2
+  "name": "Personal new tab page",
+  "description": "Custom new tab page",
+  "background": 
+  {
+    "scripts": [ "bookmarks.js" ]
+  },
+  "permissions": [
+    "bookmarks",
+    "topSites",
+    "chrome://favicon/",
+    "storage"
+  ],
+  "version": "0.1",
+  "incognito": "split",
+  "chrome_url_overrides": {
+    "newtab": "default.html"
+  },
+  "manifest_version": 2
 }

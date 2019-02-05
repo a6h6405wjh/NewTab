@@ -3,6 +3,10 @@
 // Namespace.
 var ntp = ntp ||
     {
+        ignore: false,
+        parentId: "1",
+        id: "1",
+        pinned: 0
     };
 
 ntp.nodeToHtml = function(node)
@@ -13,7 +17,7 @@ ntp.nodeToHtml = function(node)
     var img = document.createElement("img");
     var title;
 
-    div.classList += "book fade";
+    div.classList += "book";
     title = node.title;
     div.id = node.id;
 
@@ -21,10 +25,34 @@ ntp.nodeToHtml = function(node)
     if (node.hasOwnProperty("children"))
     {
         img.src = "img/folder.svg";
-        div.addEventListener("click", ntp.getNodes);
+        div.addEventListener("click", ntp.parseNodes);
+
+        div.oncontextmenu = function (ev)
+        {
+            var cmenu = document.getElementById("cmenu");
+            cmenu.style.display = "block";
+
+            var win = document.body.getBoundingClientRect();
+
+            cmenu.style.top = this.getBoundingClientRect().top + this.offsetHeight / 2 + 'px';
+            cmenu.style.left = this.getBoundingClientRect().left + this.offsetWidth / 2 + 'px';
+
+            var id = this.id;
+
+            cmenu.children[0].addEventListener("click", function ()
+            {
+                chrome.storage.sync.set({ "pinned": id }, null);
+               
+                cmenu.style.display = "none";
+                ntp.parseNodes(undefined, true, id);
+            });
+
+            return false;
+        }
     }
     else
     {
+        div.setAttribute('title', node.title);
         img.src = "chrome://favicon/size/48/" + node.url;
         anchor.href = node.url;
     }
@@ -36,41 +64,76 @@ ntp.nodeToHtml = function(node)
     return div;
 }
 
-ntp.getNodes = function(e, pinned)
+ntp.parseNodes = function(e, pinned, id, up)
 {
-    var id = e ? e.currentTarget.id : "1";
-
-    if (pinned) id = "282";
+    id = e ? e.currentTarget.id : id ? id : "1";
 
     var node = chrome.bookmarks.getSubTree(id,
         function (node)
         {
             var nodes = node[0].children;
 
+            ntp.parentId = node[0].parentId;
+            ntp.id = node[0].id;
+
             var nodeset;
 
             if (pinned)
             {
-                nodeset = document.getElementById("bookmarks-pinned");
+                nodeset = document.getElementById("pinned");
+
+                while (nodeset.children.length > 0)
+                {
+                    nodeset.children[0].remove();
+                }
             }
             else
             {
+                var nav = document.getElementById("navigator");
+
+                if (nav.children.length > 0)
+                {
+                    nav.children[0].remove();
+                }
+                
                 nodeset = document.createElement("div");
-                document.getElementById("bookmarks-bar").appendChild(nodeset);
+                nav.appendChild(nodeset);
+
+                nodeset.classList += up ? "up" : "down";
             }
 
             for (var i = 0; i < nodes.length; i++)
             {
-                nodeset.appendChild(ntp.nodeToHtml(nodes[i]));
+                if (nodes[i].id != ntp.pinned)
+                {
+                   nodeset.appendChild(ntp.nodeToHtml(nodes[i]));
+                }
             }
         }
     );
 }
 
-ntp.initialize = function ()
+ntp.upHierarchy = function (e)
 {
-    ntp.getNodes(undefined, true);
-    ntp.getNodes();
+    setTimeout(function(){ntp.ignore = false}, 500);
+
+    if (ntp.ignore == false & ntp.id != ntp.parentId & e.wheelDelta > 0 & ntp.parentId > 0 & document.getElementsByTagName('html')[0].scrollTop == 0)
+    {
+        ntp.ignore = true;
+        ntp.parseNodes(undefined, false, ntp.parentId, true);
+    }
 }
 
-window.onload = ntp.initialize;
+ntp.initialize = function ()
+{ 
+    chrome.storage.sync.get(["pinned"], (result) =>
+    {
+        ntp.parseNodes(undefined, true, result['pinned']);
+    });
+
+   
+    ntp.parseNodes();
+    document.getElementById("navigator").addEventListener("wheel", ntp.upHierarchy, false);
+}
+
+document.addEventListener('DOMContentLoaded', ntp.initialize);

@@ -2,19 +2,21 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Home</title>
     <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 <body>
-    <div id="content">
-        <div id="bookmarks-pinned"></div>
-        <div id="bookmarks-crumbs"><a class="fright" href="#" onclick="chrome.tabs.create({url:'chrome://bookmarks'});">⋮</a></div>
-        <div id="bookmark-navigator">
-            <div id="bookmarks-bar"></div>
-        </div>
+    <div id="cmenu">
+        <div>Pin</div>
     </div>
-
+    <!--<div id="extras">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg">
+            <use href="img/donate.svg" />
+        </svg>
+        <a href="Settings.html">⋮</a>
+    </div>-->
+    <div id="pinned"></div>
+    <div id="navigator"></div>
     <script src="bookmarks.js"></script>
-    <!--<script src="script.js"></script>-->
 </body>
 </html>
