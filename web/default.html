@@ -17,7 +17,7 @@
     </div>-->
 
     <div id="pinned"></div>
-    <div id="mid"><input placeholder="Google"/><a href="">Downloads</a><a href="">History</a><a href="">Bookmarks</a></div>
+    <div id="mid"><input placeholder="Google"/><a onclick="chrome.tabs.create({url:'chrome://downloads'});">Downloads</a><a onclick="chrome.tabs.create({url:'chrome://history'});">History</a><a onclick="chrome.tabs.create({url:'chrome://bookmarks'});">Bookmarks</a></div>
     <div id="navigator"></div>
     <script src="bookmarks.js"></script>
 </body>
