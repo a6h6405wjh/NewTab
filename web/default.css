@@ -28,13 +28,12 @@ html, body
     letter-spacing: .08rem;
 }
 
-body
-{
+body {
     background: hsl(210, 15%, 18%);
     font-family: 'Open Sans', sans-serif;
     display: grid;
     grid-template-columns: 16.66vw 66.66vw 16.66vw;
-    grid-template-rows: .8fr 1fr;
+    grid-template-rows: .35fr 1fr .25fr 1fr .35fr;
     user-select: none;
 }
 
@@ -70,7 +69,7 @@ body
 #pinned
 {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 2;
     align-self: center;
     box-sizing: content-box;
     margin-bottom: 1.25rem;
@@ -81,12 +80,11 @@ body
 }
 
 #navigator,
-#layout
-{
-    
+#layout {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 4;
     flex-direction: column;
+    align-self: center;
 }
 
 
@@ -100,6 +98,35 @@ body
     justify-content: center;
     transition: opacity 2s ease-in-out;
 }
+
+#mid
+{
+    grid-row: 3;
+    grid-column: 2;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+}
+
+#mid a
+{
+    display: inline-block;
+    color: darkgray;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin: 1rem;
+    align-self: center;
+}
+
+    #mid input 
+    {
+        align-self: center;
+        border-radius: .225rem;
+        border: none;
+        padding: .5rem;
+        margin: 1rem;
+        outline: none;
+    }
 
 .book
 {

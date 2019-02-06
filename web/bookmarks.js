@@ -20,6 +20,7 @@ ntp.nodeToHtml = function(node)
     div.classList += "book";
     title = node.title;
     div.id = node.id;
+    div.setAttribute('title', node.title);
 
     // Process folder.
     if (node.hasOwnProperty("children"))
@@ -52,7 +53,6 @@ ntp.nodeToHtml = function(node)
     }
     else
     {
-        div.setAttribute('title', node.title);
         img.src = "chrome://favicon/size/48/" + node.url;
         anchor.href = node.url;
     }
@@ -99,7 +99,7 @@ ntp.parseNodes = function(e, pinned, id, up)
                 nodeset = document.createElement("div");
                 nav.appendChild(nodeset);
 
-                nodeset.classList += up ? "up" : "down";
+                nodeset.classList += up ? "up" : "down  ";
             }
 
             for (var i = 0; i < nodes.length; i++)
