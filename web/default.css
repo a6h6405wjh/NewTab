@@ -33,7 +33,7 @@ body {
     font-family: 'Open Sans', sans-serif;
     display: grid;
     grid-template-columns: 16.66vw 66.66vw 16.66vw;
-    grid-template-rows: .35fr 1fr .25fr 1fr .35fr;
+    grid-template-rows: .15fr 1fr .25fr 1fr .30fr;
     user-select: none;
 }
 
@@ -72,8 +72,6 @@ body {
     grid-row: 2;
     align-self: center;
     box-sizing: content-box;
-    margin-bottom: 1.25rem;
-    margin-top: 1.25rem;
     flex-flow: nowrap;
     min-height: 84px;
     overflow: hidden;
@@ -115,6 +113,11 @@ body {
     text-decoration: none;
     text-transform: uppercase;
     margin: 1rem;
+    align-self: center;
+}
+
+#mid form
+{
     align-self: center;
 }
 
@@ -195,7 +198,6 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding-bottom: 1rem;
 }
 
 #pinned span
