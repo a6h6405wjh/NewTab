@@ -9,7 +9,8 @@
     "bookmarks",
     "topSites",
     "chrome://favicon/",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "version": "0.1",
   "incognito": "split",

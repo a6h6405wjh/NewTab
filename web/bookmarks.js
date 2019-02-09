@@ -125,7 +125,18 @@ ntp.upHierarchy = function (e)
 }
 
 ntp.initialize = function ()
-{ 
+{
+    var link = document.getElementById('mid');
+
+    link.querySelector('#downloads-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://downloads' }) });
+    link.querySelector('#history-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://history' }) });
+    link.querySelector('#bookmarks-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://bookmarks' }) });
+    link.querySelector('#incognito-link').addEventListener('click', () =>
+    {
+        chrome.windows.create({ incognito: true, state: "maximized"})
+    });
+
+   
     chrome.storage.sync.get(["pinned"], (result) =>
     {
         ntp.parseNodes(undefined, true, result['pinned']);

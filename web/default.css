@@ -1,8 +1,7 @@
 ﻿    
-/* Default page style. */    
+/* Default page style. */
 
-:root
-{
+:root {
     --tile-x: 8;
     --tile-y: 1;
     --tile-sq: 70px;
@@ -11,12 +10,12 @@
     --clr-bg: rgba(255,255,255,0.05);
     --clr-shadow: rgba(0,0,0,.5);
     --dim-rad: 0;
+    --txt: hsla(200,10%,95%,60%);
 }
 
 /* ========== Layout */
 
-*
-{
+* {
     box-sizing: border-box;
 }
 
@@ -75,6 +74,7 @@ body {
     flex-flow: nowrap;
     min-height: 84px;
     overflow: hidden;
+    padding-bottom: 2rem;
 }
 
 #navigator,
@@ -106,30 +106,48 @@ body {
     display: flex;
 }
 
-#mid a
-{
-    display: inline-block;
-    color: darkgray;
-    text-decoration: none;
-    text-transform: uppercase;
-    margin: 1rem;
-    align-self: center;
-}
+    #mid > span 
+    {
+        display: flex;
+        /*background: rgba(255,255,255,0.025);*/
+        padding: 0 2rem;
+        border-radius: .225rem;
+    }
+
+    #mid a {
+        display: inline-block;
+        color: darkgray;
+        text-decoration: none;
+        text-transform: uppercase;
+        margin: 1rem;
+        align-self: center;
+        color: var(--txt);
+    }
 
 #mid form
 {
     align-self: center;
 }
 
-    #mid input 
-    {
+    #mid input {
         align-self: center;
         border-radius: .225rem;
         border: none;
         padding: .5rem;
         margin: 1rem;
         outline: none;
+        background: hsla(0,0%,7%, 30%);
+        /* border-bottom: .125rem solid hsl(0,0%, 40%); */
+        /* text-transform: capitalize; */
+        text-transform: uppercase;
+        text-align: center;
+        color: var(--txt);
     }
+
+        #mid input::placeholder
+        {
+            color: var(--txt);
+        }
 
 .book
 {
@@ -190,7 +208,7 @@ body {
 .book:active
 {
     transition: background 0.1s ease-out;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255,255,255,0.025);
 }
 
 #navigator
@@ -198,6 +216,7 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    padding-top: 2rem;
 }
 
 #pinned span
@@ -211,7 +230,7 @@ body {
     display: block;
     overflow: hidden;
     text-decoration: none;
-    color: rgba(255,255,255,0.6);
+    color: var(--txt);
     min-width: 0;
     align-self: center;
     transition: color 0.3s ease-in-out;

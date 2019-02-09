@@ -18,13 +18,16 @@
 
     <div id="pinned"></div>
     <div id="mid">
-        <form method="get" action="https://www.google.com/search">
-            <input type="text" name="q" value="" placeholder="Google">
-        </form>
-    
-        <a href="#" onclick="chrome.tabs.create({url:'chrome://downloads'});">Downloads</a>
-        <a onclick="chrome.tabs.create({url:'chrome://history'});">History</a>
-        <a onclick="chrome.tabs.create({url:'chrome://bookmarks'});">Bookmarks</a></div>
+        <span>
+            <a href="#" id="downloads-link">Downloads</a>
+            <a href="#" id="history-link">History</a>
+            <form method="get" action="https://www.google.com/search">
+                <input type="text" name="q" value="" placeholder="Search">
+            </form>
+            <a href="#" id="incognito-link">Incognito</a>
+            <a href="#" id="bookmarks-link">Bookmarks</a>
+        </span>
+    </div>
     <div id="navigator"></div>
     <script src="bookmarks.js"></script>
 </body>
