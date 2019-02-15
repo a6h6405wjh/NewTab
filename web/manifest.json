@@ -3,7 +3,7 @@
   "description": "Custom new tab page",
   "background": 
   {
-    "scripts": [ "bookmarks.js" ]
+    "scripts": [ "default.js", "settings.js" ]
   },
   "permissions": [
     "bookmarks",

@@ -10,7 +10,10 @@
     --clr-bg: rgba(255,255,255,0.05);
     --clr-shadow: rgba(0,0,0,.5);
     --dim-rad: 0;
-    --txt: hsla(200,10%,95%,60%);
+    --foreground: hsl(200,10%,95%);
+    --foregroundAlpha: 80%;
+    --background: hsl(210, 15%, 18%);
+    --background-image: url();
 }
 
 /* ========== Layout */
@@ -28,7 +31,7 @@ html, body
 }
 
 body {
-    background: hsl(210, 15%, 18%);
+    background: var(--background);
     font-family: 'Open Sans', sans-serif;
     display: grid;
     grid-template-columns: 16.66vw 66.66vw 16.66vw;
@@ -86,6 +89,13 @@ body {
 }
 
 
+#initialTip
+{
+    color: var(--foreground);
+    opacity: var(--foregroundAlpha);
+}
+
+
 #pinned,
 #navigator > div
 {
@@ -121,7 +131,8 @@ body {
         text-transform: uppercase;
         margin: 1rem;
         align-self: center;
-        color: var(--txt);
+        color: var(--foreground);
+        opacity: var(--foregroundAlpha);
     }
 
 #mid form
@@ -141,12 +152,12 @@ body {
         /* text-transform: capitalize; */
         text-transform: uppercase;
         text-align: center;
-        color: var(--txt);
+        color: var(--foreground);
     }
 
-        #mid input::placeholder
-        {
-            color: var(--txt);
+        #mid input::placeholder {
+            color: var(--foreground);
+            opacity: var(--foregroundAlpha);
         }
 
 .book
@@ -225,29 +236,30 @@ body {
 }
 
 
-.book a
-{
+.book {
     display: block;
     overflow: hidden;
     text-decoration: none;
-    color: var(--txt);
+    color: var(--foreground);
+    opacity: var(--foregroundAlpha);
     min-width: 0;
     align-self: center;
     transition: color 0.3s ease-in-out;
 }
 
-.book:hover a
+.book:hover
 {
     color: rgba(255,255,255,1);
 }
 
-.book span
-{
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 3em;
-}
+    .book span {
+        margin-top: .5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
 
 .icon
 {
