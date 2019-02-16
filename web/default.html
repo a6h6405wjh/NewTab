@@ -6,32 +6,40 @@
     <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 <body>
+
+    <!--Main Layout Grid-->
+    <div id="layout">
+        <div id="pinned">
+            <span id="initialTip">Welcome, right click a folder to pin it here.</span>
+        </div>
+        <div id="mid">
+            <form method="get" action="https://www.google.com/search">
+                <span>
+                    <a href="#" id="downloads-link">Downloads</a>
+                    <a href="#" id="history-link">History</a>
+                    <input type="text" name="q" value="" placeholder="Search">
+                    <a href="#" id="incognito-link">Incognito</a>
+                    <a href="#" id="bookmarks-link">Bookmarks</a>
+                    <a href="#" id="settings-link">
+                        <svg style="height: 1rem; width: 1rem; fill: var(--foreground);">
+                            <use href="#svgConfigIcon" />
+                        </svg>
+                    </a>
+                </span>
+            </form>
+        </div>
+        <div id="navigator"></div>
+    </div>
+
+    <!--Out of flow elements-->
+    <div id="popout" class="in"></div>
+
     <div id="cmenu">
         <div>Pin</div>
     </div>
-    <!--<div id="extras">
-        <svg class="icon" xmlns="http://www.w3.org/2000/svg">
-            <use href="img/donate.svg" />
-        </svg>
-        <a href="Settings.html">⋮</a>
-    </div>-->
 
-    <div id="pinned">
-        <span id="initialTip">Welcome, right click a folder to pin it here.</span>
-    </div>
-    <div id="mid">
-        <span>
-            <a href="#" id="downloads-link">Downloads</a>
-            <a href="#" id="history-link">History</a>
-            <form method="get" action="https://www.google.com/search">
-                <input type="text" name="q" value="" placeholder="Search">
-            </form>
-            <a href="#" id="incognito-link">Incognito</a>
-            <a href="#" id="bookmarks-link">Bookmarks</a>
-            <a href="settings.html">&#8942;</a>
-        </span>
-    </div>
-    <div id="navigator"></div>
+    <div id="icons" style="display: none;"></div>
+
     <script src="default.js"></script>
 </body>
 </html>

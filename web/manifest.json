@@ -10,7 +10,8 @@
     "topSites",
     "chrome://favicon/",
     "storage",
-    "tabs"
+    "tabs",
+    "file: ///*" 
   ],
   "version": "0.1",
   "incognito": "split",

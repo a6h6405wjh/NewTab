@@ -2,25 +2,57 @@
 /* Default page style. */
 
 :root {
-    --tile-x: 8;
-    --tile-y: 1;
-    --tile-sq: 70px;
-    --clr-light: rgb(222, 222, 222);
-    --clr-accent: rgb(0, 208, 255);
+    --iconSize: 48px;
+ 
     --clr-bg: rgba(255,255,255,0.05);
     --clr-shadow: rgba(0,0,0,.5);
     --dim-rad: 0;
     --foreground: hsl(200,10%,95%);
-    --foregroundAlpha: 80%;
     --background: hsl(210, 15%, 18%);
-    --background-image: url();
+    --backgroundImage: none;
+    --folder: hsl(200,10%,95%);
+    --controlBorder: hsl(0,0%,70%);
+    --viewWidth: 66.66vw;
+    --control: hsla();
+    --hover: hsla();
 }
 
-/* ========== Layout */
 
 * {
     box-sizing: border-box;
 }
+
+a {
+    text-decoration: none;
+}
+
+input,
+select
+{
+    border-radius: .225rem;
+    border: 1px solid hsl(0, 0%, 70%);
+}
+
+select {
+    padding: .25rem;
+}
+
+input[type=number] {
+    /*Account for shitty default centering.*/
+    padding: .3rem 0 .2rem .25rem;
+    line-height: 1.5rem;
+    border-radius: .25rem 0 0 .25rem;
+    vertical-align: -webkit-baseline-middle;
+}
+
+input[type=number]::-webkit-textfield-decoration-container {
+    position: relative;
+    top: .05rem;
+    padding-left: .25rem;
+    line-height: 1.5rem;
+}
+
+
 
 html, body
 {
@@ -28,31 +60,21 @@ html, body
     height: 100%;
     font-family: 'Open Sans', sans-serif;
     letter-spacing: .08rem;
+    overflow: hidden;
 }
 
-body {
+
+#layout {
     background: var(--background);
+    background-image: var(--backgroundImage);
     font-family: 'Open Sans', sans-serif;
     display: grid;
-    grid-template-columns: 16.66vw 66.66vw 16.66vw;
+    grid-template-columns: auto var(--viewWidth) auto;
     grid-template-rows: .15fr 1fr .25fr 1fr .30fr;
     user-select: none;
+    height: 100%;
 }
 
-#extras
-{
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-}
-
-#extras a
-{
-    font-size: 1.125rem;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-}
 
 #cmenu 
 {
@@ -116,63 +138,60 @@ body {
     display: flex;
 }
 
-    #mid > span 
-    {
-        display: flex;
-        /*background: rgba(255,255,255,0.025);*/
-        padding: 0 2rem;
-        border-radius: .225rem;
-    }
+#mid form > span 
+{
+    display: flex;
+    /*background: rgba(255,255,255,0.025);*/
+    padding: 0 2rem;
+    border-radius: .225rem;
+}
 
-    #mid a {
-        display: inline-block;
-        color: darkgray;
-        text-decoration: none;
-        text-transform: uppercase;
-        margin: 1rem;
-        align-self: center;
-        color: var(--foreground);
-        opacity: var(--foregroundAlpha);
-    }
+#mid a {
+    display: inline-block;
+    color: darkgray;
+    text-transform: uppercase;
+    margin: 1rem;
+    align-self: center;
+    color: var(--foreground);
+    opacity: var(--foregroundAlpha);
+}
 
 #mid form
 {
     align-self: center;
 }
 
-    #mid input {
-        align-self: center;
-        border-radius: .225rem;
-        border: none;
-        padding: .5rem;
-        margin: 1rem;
-        outline: none;
-        background: hsla(0,0%,7%, 30%);
-        /* border-bottom: .125rem solid hsl(0,0%, 40%); */
-        /* text-transform: capitalize; */
-        text-transform: uppercase;
-        text-align: center;
-        color: var(--foreground);
-    }
+#mid input {
+    align-self: center;
+    border-radius: .225rem;
+    border: none;
+    padding: .5rem;
+    margin: 1rem;
+    outline: none;
+    background: var(--control);
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--foreground);
+}
 
-        #mid input::placeholder {
-            color: var(--foreground);
-            opacity: var(--foregroundAlpha);
-        }
+#mid input::placeholder {
+    color: var(--foreground);
+    opacity: var(--foregroundAlpha);
+}
 
 .book
 {
+    display: block;
+    overflow: hidden;
+    color: var(--foreground);
+    opacity: var(--foregroundAlpha);
+    transition: color 0.3s ease-in-out, background 0.3s ease-in-out;
     margin: .25rem;
     padding: 1rem .5rem;
-    display: inline-block;
-    width: calc(48px + 2.5rem);
+    width: calc(var(--iconSize) + 2.5rem);
     text-align: center;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    align-self: center;
 }
 
 .up
@@ -213,13 +232,14 @@ body {
 
 .book:hover
 {
-    background: rgba(255,255,255,0.05);
+    background: var(--hover);
+    color: rgba(255,255,255,1);
 }
 
 .book:active
 {
     transition: background 0.1s ease-out;
-    background: rgba(255,255,255,0.025);
+    opacity: 0.75;
 }
 
 #navigator
@@ -228,6 +248,8 @@ body {
     display: flex;
     flex-direction: column;
     padding-top: 2rem;
+    grid-column: 2;
+    grid-row: 4;
 }
 
 #pinned span
@@ -235,44 +257,50 @@ body {
     display: none;
 }
 
-
-.book {
-    display: block;
+.book span {
+    margin-top: .5rem;
     overflow: hidden;
-    text-decoration: none;
-    color: var(--foreground);
-    opacity: var(--foregroundAlpha);
-    min-width: 0;
-    align-self: center;
-    transition: color 0.3s ease-in-out;
-}
-
-.book:hover
-{
-    color: rgba(255,255,255,1);
-}
-
-    .book span {
-        margin-top: .5rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-    }
-
-.icon
-{
-    width: 1.5rem;
-    height: 1.5rem;
-    fill: white;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 
 #pinned img,
-#navigator img
-{
-    width: 48px;
-    height: 48px;
+#navigator img,
+.icon {
+    width: var(--iconSize);
+    height: var(--iconSize);
 }
 
+#popout {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: gainsboro;
+    transition: right .25s ease-in-out, opacity .25s ease-in-out;
+}
+
+#popout.in {
+    pointer-events: none;
+    opacity: 0;
+    right: calc(-100%);
+}
+
+#popout.out {
+    right: 0;
+    pointer-events: all;
+    opacity: 1;
+}
+
+.folder svg
+{
+    width: var(--iconSize);
+    height: var(--iconSize);
+    fill: var(--folder);
+}
+
+.emptyFolder {
+    opacity: .5;
+}

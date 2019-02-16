@@ -1,86 +1,154 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>Settings</title>
     <style type="text/css">
 
 
-        * 
-        {
-            color: var(--foreground);
-        }
-
-        html, body {
-            margin: 0;
-            height: 100%;
-            font-family: 'Open Sans', sans-serif;
-            letter-spacing: .08rem;
-        }
-
-        body {
-            background: var(--background);
-            font-family: 'Open Sans', sans-serif;
-            display: grid;
-            grid-template-columns: 16.66vw 66.66vw 16.66vw;
-            grid-template-rows: .15fr 1fr .30fr;
-            user-select: none;
-        }
-
-
-        #layout
-        {
+        #settings {
             grid-row: 2;
             grid-column: 2;
-            background: var(--background);
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            grid-row-gap: 1rem;
+            grid-column-gap: 1rem;
+            align-items: center;
         }
 
-            #layout input {
-                background: hsla(0,0%,40%,.6);
-                border-color: hsla(0,0%,50%, 0.6);
-            }
+        #settings input[type=color] {
+            height: 1.5rem;
+            width: 2rem;
+            padding: 0;
+            border: none;
+        }
 
-                #layout input::-webkit-color-swatch {
+        #settings input[type=color]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
 
-                    border-color: hsla(0,0%,50%,0.65);
-                }
+        #settings input[type=color]::-webkit-color-swatch {
+            border: 1px solid var(--controlBorder);
+        }
+                    
+        h1 {
+            font-size: 1.25rem;
+            color: hsl(210,90%, 50%);
+        }
 
+        h1 + hr {
+            grid-column: 2 / span 3;
+            width: -webkit-fill-available;
+            opacity: .75;
+        }
 
-        #layout input ~ span
+        #settings input
         {
-            margin-left: 1rem;
+            height: 1.5rem;
         }
 
-       #layout .control
-       {
-           margin-bottom:2rem;
-       }
+        h3
+        {
+            margin: 0;
+
+        }
+
+        .rangeLabels {
+            position: relative;
+            display: flex;
+            align-items: center;
+            grid-column: 3 / span 2;
+        }
+
+        .rangeLabels label {
+            opacity: 0;
+            transition: opacity .25s ease-in-out;
+            position: absolute;
+        }
+
+        #settings a,
+        #settings a:visited {
+            color: hsl(210,90%, 50%);
+        }
 
     </style>
 </head>
 <body>
-    <div id="layout">
-        <a href="default.html">Back</a>
-        <h1>General</h1>
-        <div class="control">
-            <input type="color" id="background" value="#272E35" />
-            <span>Background Color</span>
+    <div id="settings">
+
+        <a href="#" id="closeSettings" style="grid-column: 4; justify-self: flex-end; align-self: center; font-size: 1.25rem; color: tomato;" title="Close settings">&#10006;</a>
+
+        <h1>Appearance</h1>
+        <hr style="grid-column: 2 / span 3; grid-row: 2;" />
+
+        <h3>Background</h3>
+        <input type="color" id="background" value="#272E35" />
+
+        <h3 style="grid-column: 1;">Hover</h3>
+        <input type="color" id="hover" value="#F4F2F1" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" id="hoverAlpha" value="80" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
         </div>
 
-        <div class="control">
-            <input type="color" id="foreground" value="#F4F2F1" />
-            <span>Text Color</span>
-            <input type="number" id="foregroundAlpha" value="80" min="0" max="100" style="margin-left: 2rem;"/>
-            <span>Opacity</span>
+        <h3 style="grid-column: 1;">Controls</h3>
+        <input type="color" id="control" value="#F4F2F1" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" id="controlAlpha" value="80" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
         </div>
 
-        <div class="control">
-            <input type="checkbox" checked id="hidePinned" value="">
-            <span>Hide pinned folder from browser</span>
+
+        <h3>Text</h3>
+        <input type="color" id="foreground" value="#F4F2F1" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" id="foregroundAlpha" value="80" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
         </div>
 
-        <h1>Links</h1>
+        <h3>Folder</h3>
+        <input type="color" id="folder" value="#F4F2F1" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" id="folderAlpha" value="80" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+        </div>
+
+        <h3>Icon Size</h3>
+        <select id="iconSize" style="grid-column: 3 / span 2;" value="48">
+            <option value="24" label="24px">
+            <option value="32" label="32px">
+            <option value="48" label="48px (Recommended)">
+            <option value="64" label="64px">
+            <option value="128" label="128px">
+            <option value="256" label="256px">
+        </select>
+
+        <h3>Viewport Width</h3>
+        <div style="grid-column: 4; justify-self: flex-end; display: flex; align-items: center;">
+            <input type="number" id="viewWidth" value="66.66" style="width: 5rem; margin-right: .5rem;" />
+            <span> %</span>
+        </div>
+
+        <!--<h1>Links</h1>
+    <hr />-->
+
+        <h1 style="margin-top: 4rem;">Behaviour</h1>
+        <hr style="margin-top: 4rem;" />
+
+        <h3>Pinned Folder</h3>
+        <span style="grid-column: 2 / span 3; justify-self: flex-end; display: flex; align-items: center;">
+            <input type="checkbox" checked id="hidePinned" value="true" style="margin-right: 1rem;">
+            <label>Hide from bookmarks</label>
+        </span>
+
+
+        <h3>Bookmark Position</h3>
+
+        <select id="positionRecall" style="grid-column: 3 / span 2;">
+            <option value="0" label="Don't save">
+            <option value="1" label="Save until browser close">
+            <option value="2" label="Always save">
+        </select>
+
     </div>
-    <script src="settings.js"></script>
 </body>
 </html>
