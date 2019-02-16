@@ -7,58 +7,67 @@ var ntp = ntp ||
     };
 
 
-
-ntp.loadSettings = function () {
+ntp.loadSettings = function (setDefaults) {
 
     //Get stored settings.
-    chrome.storage.sync.get(null, (items) =>
-    {
+    chrome.storage.sync.get(null, (items) => {
         var root = document.documentElement;
 
-        var inputs = document.getElementsByTagName("input");
+        var inputs = document.querySelectorAll("#settings input, #settings select");
 
-        function initInput(key)
-        {
-            var inp = inputs.namedItem(key);
+        function initInput(key) {
+
+            var inp;
+
+            //Match key in nodelist.
+            for (let x = 0; x < inputs.length; x++) {
+                if (inputs[x].id === key) {
+                    inp = inputs[x];
+                    break;
+                }
+            }
+
 
             try {
                 if (items[key]) inp.value = items[key];
-            }
-            catch (e) { console.log(e); }
-           
 
-            inp.addEventListener("change", () => {
-                chrome.storage.sync.set({ [key]: inp.value }, null);
-                ntp.applySettings();
-            });
+                // Special case for checked.
+                if (inp.type === "checkbox") inp.checked = items[key];
+            }
+            catch (e) { console.log(e, 'key: ' + key ); }
+
+
+            // Store control values.
+            function storeControlValues() {
+                var val = inp.type === 'checkbox' ? inp.checked : inp.value;
+                chrome.storage.sync.set({ [key]: val }, null);
+                ntp.parseSettings();
+            }
+
+            if (inp) {
+
+                // Store on control changed.
+                inp.addEventListener("input", storeControlValues);
+
+                // Store values if default setup.
+                if (setDefaults) storeControlValues();
+            }
         }
 
         initInput("background");
+        initInput("hover");
+        initInput("hoverAlpha");
+        initInput("control");
+        initInput("controlAlpha");
         initInput("foreground");
         initInput("foregroundAlpha");
-        initInput("backgroundImage");
+        initInput("folder");
+        initInput("folderAlpha");
+        initInput("iconSize");
+        initInput("viewWidth");
+        initInput("hidePinned");
+        initInput("savePosition");
 
-        document.getElementById("bgImageUrl").innerText = items.backgroundImage.replace("C:\\fakepath\\", "");
-
-        document.getElementById("backgroundImage").addEventListener("change", previewFile);
-        previewFile(items.backgroundImage);
+        document.getElementById("closeSettings").addEventListener('click', () => { document.getElementById('popout').classList.remove('out'); });
     });
 };
-
-
-function previewFile(img)
-{
-    var preview = document.querySelector('#pvImg');
-    var file = document.querySelector('input[type=file]').files[0];
-    var reader = new FileReader();
-
-    reader.addEventListener("load", function () {
-        preview.src = reader.result;
-    }, false);
-
-    if (img) {
-        reader.readAsDataURL(img);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', ntp.loadSettings);

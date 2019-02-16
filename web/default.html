@@ -28,18 +28,24 @@
                 </span>
             </form>
         </div>
-        <div id="navigator"></div>
+        <div id="bookBrowser"></div>
     </div>
 
     <!--Out of flow elements-->
     <div id="popout" class="in"></div>
 
     <div id="cmenu">
-        <div>Pin</div>
+        <div>
+            <svg style="fill: tomato;">
+                <use href="#svgPinIcon"/>
+            </svg>
+            <span>Pin</span>
+        </div>
     </div>
 
     <div id="icons" style="display: none;"></div>
 
     <script src="default.js"></script>
+    <script src="settings.js" async></script>
 </body>
 </html>

@@ -81,7 +81,26 @@ html, body
     position: fixed;
     display: none;
     background: white;
-    padding: .5rem;
+    cursor: pointer;
+}
+
+#cmenu > div {
+    display: flex;
+    align-items: center;
+    padding: .5rem .75rem .5rem .5rem;
+}
+
+#cmenu > div:hover
+{
+    background: hsl(200,0%,90%);
+}
+
+
+#cmenu svg
+{
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: .5rem;
 }
 
 #cmenu a
@@ -102,7 +121,7 @@ html, body
     padding-bottom: 2rem;
 }
 
-#navigator,
+#bookBrowser,
 #layout {
     grid-column: 2;
     grid-row: 4;
@@ -119,7 +138,7 @@ html, body
 
 
 #pinned,
-#navigator > div
+#bookBrowser > div
 {
     display: flex;
     flex-wrap: wrap;
@@ -242,7 +261,7 @@ html, body
     opacity: 0.75;
 }
 
-#navigator
+#bookBrowser
 {
     flex-grow: 1;
     display: flex;
@@ -268,7 +287,7 @@ html, body
 
 
 #pinned img,
-#navigator img,
+#bookBrowser img,
 .icon {
     width: var(--iconSize);
     height: var(--iconSize);

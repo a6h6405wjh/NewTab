@@ -1,44 +1,47 @@
 ﻿'use strict';
 
+
 // Namespace.
 var ntp = ntp ||
     {
-        ignore: false,
+        ignoreWheel: false,
         parentId: "1",
         id: "1",
         pinned: 0,
         settingsLoaded: false,
         folder: '#folderA',
         hidePinned: true,
-        positionRecall: 0
+        savePosition: false
     };
 
 
+// Transform a bookmark node into html element.
+ntp.bookToElement = function (book) {
 
-ntp.nodeToHtml = function (node) {
-    var a = document.createElement("a");
+    var element = document.createElement("a");
     var label = document.createElement("span");
     var title;
 
-    a.classList += "book";
-    title = node.title;
-    a.id = node.id;
-    a.setAttribute('title', node.title);
+    element.classList += "book";
+    title = book.title;
+    element.id = book.id;
+    element.setAttribute('title', book.title);
 
     // Process folder.
-    if (node.hasOwnProperty("children")) {
+    if (book.hasOwnProperty("children")) {
 
         var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
 
         use.setAttribute("href", ntp.folder);
-        a.classList.add('folder');
-        
-        a.addEventListener("click", ntp.parseNodes);
         svg.appendChild(use);
-        a.appendChild(svg);
+        element.appendChild(svg);
+        element.classList.add('folder');
 
-        a.oncontextmenu = function (ev) {
+        element.addEventListener("click", ntp.parseBooks);
+
+        // Context menu for folders.
+        element.oncontextmenu = function (ev) {
             var cmenu = document.getElementById("cmenu");
             cmenu.style.display = "block";
 
@@ -53,95 +56,107 @@ ntp.nodeToHtml = function (node) {
                 chrome.storage.sync.set({ "pinned": id }, null);
 
                 cmenu.style.display = "none";
-                ntp.parseNodes(undefined, true, id);
+                ntp.parseBooks(undefined, true, id);
             });
 
             return false;
         };
     }
+    // Bookmark - not folder.
     else {
         var img = document.createElement("img");
-        img.src = "chrome://favicon/size/48/" + node.url;
-        a.href = node.url;
-        a.appendChild(img);
+        img.src = "chrome://favicon/size/48/" + book.url;
+        element.href = book.url;
+        element.appendChild(img);
     }
 
     label.appendChild(document.createTextNode(title));
     
-    a.appendChild(label);
-    a.setAttribute("draggable", "true");
-    a.addEventListener("dragstart", ntp.dragStart);
-    a.addEventListener("dragover", () => { event.preventDefault();});
-    a.addEventListener("drop", ntp.dragStop);
+    element.appendChild(label);
+    element.setAttribute("draggable", "true");
+    element.addEventListener("dragstart", ntp.dragStart);
+    element.addEventListener("dragover", () => { event.preventDefault();});
+    element.addEventListener("drop", ntp.dragStop);
 
-    return a;
+    return element;
 };
 
 
+// Get bookmarks from chrome api.
+// pinned, boolean.
+// id, id of folder to parse.
+// up, direction for animation class.
+ntp.parseBooks = function (e, pinned, id, up) {
 
-ntp.parseNodes = function (e, pinned, id, up) {
     id = e ? e.currentTarget.id : id ? id : "1";
 
-    if (ntp.positionRecall === 2) chrome.storage.sync.set({ folderId: id }, null);
-    if (ntp.positionRecall === 1) sessionStorage.setItem("folderId", id);
+    if (pinned !== true)
+    {
+        if (ntp.savePosition === true) chrome.storage.sync.set({ folderId: id }, null);
+    }
 
-    var node = chrome.bookmarks.getSubTree(id,
-        function (node) {
-            var nodes = node[0].children;
+    // Get bookmarks.
+    chrome.bookmarks.getSubTree(id, (root) => {
 
-            ntp.parentId = node[0].parentId;
-            ntp.id = node[0].id;
+        var books = root[0].children;
 
-            var nodeset;
+        ntp.parentId = root[0].parentId;
+        ntp.id = root[0].id;
 
-            if (pinned) {
-                nodeset = document.getElementById("pinned");
+        var output; // Parent to output books into.
 
-                while (nodeset.children.length > 0) {
-                    nodeset.children[0].remove();
-                }
-            }
-            else {
-                var nav = document.getElementById("navigator");
+        if (pinned) {
+            output = document.getElementById("pinned");
 
-                if (nav.children.length > 0) {
-                    nav.children[0].remove();
-                }
-
-                nodeset = document.createElement("div");
-                nav.appendChild(nodeset);
-
-                nodeset.classList += up ? "up" : "down  ";
-
-                //Insert empty folder notification.
-                if (nodes.length === 0) {
-
-                    var fake = ntp.nodeToHtml({ id: node[0].id, title: 'Empty', children: [null] });
-
-                    fake.classList.add("emptyFolder");
-
-                    // Create a fake node.
-                    nodeset.appendChild(fake);
-                }
-            }
-
-            for (var i = 0; i < nodes.length; i++) {
-                if (nodes[i].id !== ntp.pinned | !ntp.hidePinned) {
-                    nodeset.appendChild(ntp.nodeToHtml(nodes[i]));
-                }
+            while (output.children.length > 0) {
+                output.children[0].remove();
             }
         }
-    );
+        else {
+            // Bookmark browsing div.
+            var browser = document.getElementById("bookBrowser");
+
+            if (browser.children.length > 0) {
+                browser.children[0].remove();
+            }
+
+            output = document.createElement("div");
+            browser.appendChild(output);
+
+            output.classList += up ? "up" : "down  ";
+
+            //Insert empty folder notification.
+            if (books.length === 0) {
+
+                var fake = ntp.bookToElement({ id: root[0].id, title: 'Empty', children: [null] });
+
+                fake.classList.add("emptyFolder");
+
+                // Create a fake node.
+                output.appendChild(fake);
+            }
+        }
+
+        // Append each book to output div.
+        for (var i = 0; i < books.length; i++) {
+            if (books[i].id !== ntp.pinned | !ntp.hidePinned) {
+                // Convert the book first.
+                output.appendChild(ntp.bookToElement(books[i]));
+            }
+        }
+    });
 };
 
 
-
+// Move up heirarchy - triggered by mouse wheel.
 ntp.upHierarchy = function (e) {
-    setTimeout(function () { ntp.ignore = false; }, 500);
 
-    if (ntp.ignore === false & ntp.id !== ntp.parentId & e.wheelDelta > 0 & ntp.parentId > 0 & document.getElementsByTagName('html')[0].scrollTop === 0) {
-        ntp.ignore = true;
-        ntp.parseNodes(undefined, false, ntp.parentId, true);
+    // Clamp repeats.
+    setTimeout(function () { ntp.ignoreWheel = false; }, 500);
+
+    if (ntp.ignoreWheel === false & ntp.id !== ntp.parentId & e.wheelDelta > 0 & ntp.parentId > 0 & document.getElementsByTagName('html')[0].scrollTop === 0) {
+        ntp.ignoreWheel = true;
+        ntp.parseBooks(undefined, false, ntp.parentId, true);
     }
 };
 
@@ -158,19 +173,21 @@ ntp.dragStop = function () {
 };
 
 
-
+// Main initialization function - entry point.
 ntp.initialize = function () {
-    var link = document.getElementById('mid');
 
-    link.querySelector('#downloads-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://downloads' });});
-    link.querySelector('#history-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://history' }); });
-    link.querySelector('#bookmarks-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://bookmarks' }); });
-    link.querySelector('#incognito-link').addEventListener('click', () => {
+    var links = document.getElementById('mid');
+
+    // Links.
+    links.querySelector('#downloads-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://downloads' });});
+    links.querySelector('#history-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://history' }); });
+    links.querySelector('#bookmarks-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://bookmarks' }); });
+    links.querySelector('#incognito-link').addEventListener('click', () => {
         chrome.windows.create({ incognito: true, state: "maximized" });
     });
 
-    // Load settings popout.
-    link.querySelector('#settings-link').addEventListener('click', () => {
+    // Settings link.
+    links.querySelector('#settings-link').addEventListener('click', () => {
 
         if (ntp.settingsLoaded === false) {
             ntp.openSubPage('settings.html', 'popout', () => {
@@ -185,16 +202,21 @@ ntp.initialize = function () {
         }
     });
 
-    ntp.applySettings(true);
+    ntp.parseSettings(true, true); // Parse any setting values.
 
-    document.getElementById("navigator").addEventListener("wheel", ntp.upHierarchy, false);
+    document.getElementById("bookBrowser").addEventListener("wheel", ntp.upHierarchy, false);
 
     ntp.openSubPage("img/icons.svg", "icons");
+
+    document.body.addEventListener('click', () => {
+        document.body.querySelector('#cmenu').style.display = 'none';
+        document.getElementById('popout').classList.remove('out');
+    });
 };
 
 
-// Apply settings - parse - boolean, optionally parse nodes.
-ntp.applySettings = function (parse) {
+// Apply settings - parse - boolean, optionally reload books.
+ntp.parseSettings = function (reloadBooks, initializing) {
 
     //Get stored settings.
     chrome.storage.sync.get(null, (items) => {
@@ -207,11 +229,16 @@ ntp.applySettings = function (parse) {
             document.getElementById("initialTip").style.display = "block";
         }
         else {
-            if (parse) ntp.parseNodes(undefined, true, ntp.pinned);
+            if (reloadBooks) ntp.parseBooks(undefined, true, ntp.pinned);
         }
 
 
         var root = document.documentElement;
+
+        //Requires initialization with defaults.
+        if (!items.background) {
+            ntp.openSubPage('settings.html', 'popout', () => { ntp.loadSettings(true); });
+        }
 
         try {
 
@@ -232,35 +259,14 @@ ntp.applySettings = function (parse) {
 
             ntp.hidePinned = items.hidePinned;
 
-            ntp.positionRecall = items.positionRecall;
+            ntp.savePosition = items.savePosition;
         }
         catch (e) { console.log(e); }
 
-        if (parse) {
-
-            var recallId;
+        if (reloadBooks) {
 
             // Parse the initial book set, depending on positionRecall.
-            switch (ntp.positionRecall) {
-                case 0:
-                    {
-                        ntp.parseNodes();
-                        break;
-                    }
-                case 1:
-                    {
-                        recallId = sessionStorage.getItem("folderId");
-                        ntp.parseNodes(undefined, false, recallId);
-                        break;
-                    }
-                case 2:
-                    {
-                        recallId = items.folderId;
-                        ntp.parseNodes(undefined, false, recallId);
-                        //ntp.parseNodes();
-                        break;
-                    }
-            }
+            ntp.savePosition === true ? ntp.parseBooks(undefined, false, items.folderId) : ntp.parseBooks();
         }
     });
 };
@@ -307,62 +313,6 @@ ntp.openSubPage = function (page, targetId, callback) {
     xmlReq.send();
 };
 
-
-ntp.loadSettings = function () {
-
-    //Get stored settings.
-    chrome.storage.sync.get(null, (items) => {
-        var root = document.documentElement;
-
-        var inputs = document.querySelectorAll("#settings input, #settings select");
-
-        function initInput(key) {
-
-            var inp;
-
-            //Match key in nodelist.
-            for (let x = 0; x < inputs.length; x++) {
-                if (inputs[x].id === key) {
-                    inp = inputs[x];
-                    break;
-                }
-            }
-
-
-            try {
-                if (items[key]) inp.value = items[key];
-
-                // Special case for checked.
-                if (inp.type === "checkbox") inp.checked = items[key];
-            }
-            catch (e) { console.log(e); }
-
-
-            // Store the control value.
-            if (inp) inp.addEventListener("input", () => {
-                var val = inp.type === 'checkbox' ? inp.checked : inp.value;
-                chrome.storage.sync.set({ [key]: val}, null);
-                ntp.applySettings();
-            });
-        }
-
-        initInput("background");
-        initInput("hover");
-        initInput("hoverAlpha");
-        initInput("control");
-        initInput("control1Alpha");
-        initInput("foreground");
-        initInput("foregroundAlpha");
-        initInput("folder");
-        initInput("folderAlpha");
-        initInput("iconSize");
-        initInput("viewWidth");
-        initInput("hidePinned");
-        initInput("positionRecall");
-
-        document.getElementById("closeSettings").addEventListener('click', () => { document.getElementById('popout').classList.remove('out'); });
-    });
-};
 
 
 document.addEventListener('DOMContentLoaded', ntp.initialize);

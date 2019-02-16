@@ -128,9 +128,6 @@
             <span> %</span>
         </div>
 
-        <!--<h1>Links</h1>
-    <hr />-->
-
         <h1 style="margin-top: 4rem;">Behaviour</h1>
         <hr style="margin-top: 4rem;" />
 
@@ -141,13 +138,13 @@
         </span>
 
 
-        <h3>Bookmark Position</h3>
+        <h3>Save Position</h3>
 
-        <select id="positionRecall" style="grid-column: 3 / span 2;">
-            <option value="0" label="Don't save">
-            <option value="1" label="Save until browser close">
-            <option value="2" label="Always save">
-        </select>
+        <span style="grid-column: 2 / span 3; justify-self: flex-end; display: flex; align-items: center;">
+            <input type="checkbox" checked id="savePosition" value="true" style="margin-right: 1rem;">
+            <label>Reload last folder</label>
+        </span>
+
 
     </div>
 </body>

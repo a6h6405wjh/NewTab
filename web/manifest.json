@@ -7,7 +7,6 @@
   },
   "permissions": [
     "bookmarks",
-    "topSites",
     "chrome://favicon/",
     "storage",
     "tabs",
