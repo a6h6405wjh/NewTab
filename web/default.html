@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Home</title>
+    <title>Zero</title>
     <link rel="stylesheet" type="text/css" href="default.css" />
 </head>
 <body>
@@ -10,23 +10,30 @@
     <!--Main Layout Grid-->
     <div id="layout">
         <div id="pinned">
-            <span id="initialTip">Welcome, right click a folder to pin it here.</span>
+            <div id="initialTip">
+                <h1 style="text-align: center;">Essential Tab<span style="color: white;">Welcome </span></h1>
+                <ul>
+                    <li>Right click a folder to pin it here.</li>
+                    <li>Right click an empty space for settings.</li>
+                    <li>Mouse wheel up navigates to the parent folder.</li>
+                </ul>
+            </div>
         </div>
-        <div id="mid">
-            <form method="get" action="https://www.google.com/search">
-                <span>
-                    <a href="#" id="downloads-link">Downloads</a>
-                    <a href="#" id="history-link">History</a>
-                    <input type="text" name="q" value="" placeholder="Search">
-                    <a href="#" id="incognito-link">Incognito</a>
-                    <a href="#" id="bookmarks-link">Bookmarks</a>
-                    <a href="#" id="settings-link">
-                        <svg style="height: 1rem; width: 1rem; fill: var(--foreground);">
-                            <use href="#svgConfigIcon" />
-                        </svg>
-                    </a>
-                </span>
-            </form>
+        <div id="shortcuts">
+            <div style="display: flex; width: min-content; justify-self: flex-end;">
+                <a href="#" id="downloads-link">Downloads</a>
+                <a href="#" id="history-link">History</a>
+            </div>
+
+            <div id="bookFilterWrap" class="composite">
+                <span class="button" id="clearBookFilter">&#10006;</span>
+                <input type="text" id="bookFilter" placeholder="Filter" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div style="display: flex; width: min-content; ">
+                <a href="#" id="incognito-link">Incognito</a>
+                <a href="#" id="bookmarks-link">Organize</a>
+            </div>
         </div>
         <div id="bookBrowser"></div>
     </div>
@@ -34,18 +41,27 @@
     <!--Out of flow elements-->
     <div id="popout" class="in"></div>
 
-    <div id="cmenu">
+    <div id="fldrMenu" class="cmenu">
         <div>
-            <svg style="fill: tomato;">
-                <use href="#svgPinIcon"/>
+            <svg>
+                <use href="#svgPinIcon" />
             </svg>
             <span>Pin</span>
+        </div>
+    </div>
+
+    <div id="cfgMenu" class="cmenu">
+        <div>
+            <svg>
+                <use href="#svgConfigIcon" />
+            </svg>
+            <span>Settings</span>
         </div>
     </div>
 
     <div id="icons" style="display: none;"></div>
 
     <script src="default.js"></script>
-    <script src="settings.js" async></script>
+    <script src="settings.js"></script>
 </body>
 </html>

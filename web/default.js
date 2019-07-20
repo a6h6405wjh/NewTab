@@ -11,7 +11,8 @@ var ntp = ntp ||
         settingsLoaded: false,
         folder: '#folderA',
         hidePinned: true,
-        savePosition: false
+        savePosition: false,
+        cfgAnimate: true
     };
 
 
@@ -38,14 +39,16 @@ ntp.bookToElement = function (book) {
         element.appendChild(svg);
         element.classList.add('folder');
 
-        element.addEventListener("click", ntp.parseBooks);
+        element.addEventListener("click", (event) => ntp.parseBooks(event, undefined, undefined, false));
 
         // Context menu for folders.
         element.oncontextmenu = function (ev) {
-            var cmenu = document.getElementById("cmenu");
-            cmenu.style.display = "block";
 
-            var win = document.body.getBoundingClientRect();
+            // Close any context menus.
+            document.body.querySelectorAll('.cmenu').forEach((cmenu) => cmenu.style.display = 'none');
+
+            var cmenu = document.getElementById("fldrMenu");
+            cmenu.style.display = "block";
 
             cmenu.style.top = this.getBoundingClientRect().top + this.offsetHeight / 2 + 'px';
             cmenu.style.left = this.getBoundingClientRect().left + this.offsetWidth / 2 + 'px';
@@ -86,55 +89,53 @@ ntp.bookToElement = function (book) {
 // pinned, boolean.
 // id, id of folder to parse.
 // up, direction for animation class.
-ntp.parseBooks = function (e, pinned, id, up) {
+ntp.parseBooks = function (e, pinned, id, up, search) {
 
     id = e ? e.currentTarget.id : id ? id : "1";
 
-    if (pinned !== true)
+    if (pinned !== true && !search)
     {
         if (ntp.savePosition === true) chrome.storage.sync.set({ folderId: id }, null);
     }
 
-    // Get bookmarks.
-    chrome.bookmarks.getSubTree(id, (root) => {
 
-        var books = root[0].children;
+    // Get bookmark tree via id, or from root.
+    if (!search) chrome.bookmarks.getSubTree(id, (root) => { parseTree(id, root); });
 
-        ntp.parentId = root[0].parentId;
+    if (search) chrome.bookmarks.search(search, (root) => { parseTree(id, root); });
+
+    function parseTree(id, root) {
+
+        // Parent to output books into.
+        var output = document.getElementById(pinned ? "pinned" : "bookBrowser");
+
+        empty(output);
+
+        // Search found nothing tip.
+        if (root.length === 0) {
+
+            showTip(output, "No results found");
+            return;
+        }
+
+        var books = search? root : root[0].children;
+
+        ntp.parentId = search ? '1' : root[0].parentId;
+
         ntp.id = root[0].id;
 
-        var output; // Parent to output books into.
+        if (!pinned) {
 
-        if (pinned) {
-            output = document.getElementById("pinned");
+            // Both must be removed to reapply animation.
+            output.classList.remove("down");
+            output.classList.remove("up");
 
-            while (output.children.length > 0) {
-                output.children[0].remove();
-            }
-        }
-        else {
-            // Bookmark browsing div.
-            var browser = document.getElementById("bookBrowser");
+            void output.offsetWidth;
 
-            if (browser.children.length > 0) {
-                browser.children[0].remove();
-            }
+            if (ntp.cfgAnimate) output.classList.add(up ? "up" : "down"); 
 
-            output = document.createElement("div");
-            browser.appendChild(output);
-
-            output.classList += up ? "up" : "down  ";
-
-            //Insert empty folder notification.
-            if (books.length === 0) {
-
-                var fake = ntp.bookToElement({ id: root[0].id, title: 'Empty', children: [null] });
-
-                fake.classList.add("emptyFolder");
-
-                // Create a fake node.
-                output.appendChild(fake);
-            }
+            // Empty folder tip.
+            if (books.length === 0) showTip(output, "Empty folder");
         }
 
         // Append each book to output div.
@@ -144,20 +145,66 @@ ntp.parseBooks = function (e, pinned, id, up) {
                 output.appendChild(ntp.bookToElement(books[i]));
             }
         }
-    });
+    }
+
+    // Empty a div.
+    function empty(div) {
+        while (div.children.length > 0) {
+            div.children[0].remove();
+        }
+    }
+
+    // Display a tip.
+    function showTip(div, text) {
+        div.classList.remove("up");
+        div.classList.remove("down");
+        div.classList.remove("fade");
+        void div.offsetWidth;
+        div.classList.add("fade");
+
+        var info = document.createElement("div");
+        info.classList.add("info");
+        info.innerText = text;
+        div.appendChild(info);
+    }
 };
+
+
 
 
 // Move up heirarchy - triggered by mouse wheel.
 ntp.upHierarchy = function (e) {
 
-    // Clamp repeats.
-    setTimeout(function () { ntp.ignoreWheel = false; }, 500);
+    ntp.layout = ntp.layout ? ntp.layout : document.getElementById('layout');
 
-    if (ntp.ignoreWheel === false & ntp.id !== ntp.parentId & e.wheelDelta > 0 & ntp.parentId > 0 & document.getElementsByTagName('html')[0].scrollTop === 0) {
+    resetIgnore(250);
+
+    if (ntp.ignoreWheel === false) {
+
         ntp.ignoreWheel = true;
-        ntp.parseBooks(undefined, false, ntp.parentId, true);
+        ntp.overflowScroll = ntp.layout.scrollTop > 0 ? true : false;
+
+        if (ntp.id !== ntp.parentId & ntp.parentId > 0 & e.wheelDelta > 0 & ntp.layout.scrollTop === 0) {
+            ntp.parseBooks(undefined, false, ntp.parentId, true);
+            document.getElementById('bookFilter').value = '';
+            document.getElementById('clearBookFilter').style.display = "none";
+        }
     }
+
+    function resetIgnore(time) {
+
+        if (ntp.ignoreWheel === false | ntp.overflowScroll === true) {
+
+            if (ntp.timeout) clearTimeout(ntp.timeout);
+
+            // Scrolled once, ignore further scrolls for 1 second.
+            ntp.timeout = setTimeout(() => {
+                ntp.ignoreWheel = false;
+                ntp.overflowScroll = false;
+            }, time);
+        }
+    }
+
 };
 
 
@@ -173,21 +220,42 @@ ntp.dragStop = function () {
 };
 
 
+ntp.ctxMenu = function (e, menuId) {
+
+    // Close any context menus.
+    document.body.querySelectorAll('.cmenu').forEach((cmenu) => cmenu.style.display = 'none');
+
+    var cmenu = document.getElementById(menuId);
+
+    cmenu.style.top = e.clientY + 'px';
+    cmenu.style.left = e.clientX + 'px';
+
+    cmenu.style.display = "block";
+};
+
+
 // Main initialization function - entry point.
 ntp.initialize = function () {
 
-    var links = document.getElementById('mid');
+
+    var links = document.getElementById('shortcuts');
 
     // Links.
-    links.querySelector('#downloads-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://downloads' });});
-    links.querySelector('#history-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://history' }); });
-    links.querySelector('#bookmarks-link').addEventListener('click', () => { chrome.tabs.create({ url: 'chrome://bookmarks' }); });
+    links.querySelector('#downloads-link').addEventListener('click', () => {
+        chrome.tabs.create({url: 'chrome://downloads'});
+    });
+    links.querySelector('#history-link').addEventListener('click', () => {
+        chrome.tabs.create({url: 'chrome://history'});
+    });
+    links.querySelector('#bookmarks-link').addEventListener('click', () => {
+        chrome.tabs.create({url: 'chrome://bookmarks'});
+    });
     links.querySelector('#incognito-link').addEventListener('click', () => {
-        chrome.windows.create({ incognito: true, state: "maximized" });
+        chrome.windows.create({incognito: true, state: "maximized"});
     });
 
     // Settings link.
-    links.querySelector('#settings-link').addEventListener('click', () => {
+    document.getElementById('cfgMenu').children[0].addEventListener('click', () => {
 
         if (ntp.settingsLoaded === false) {
             ntp.openSubPage('settings.html', 'popout', () => {
@@ -202,21 +270,61 @@ ntp.initialize = function () {
         }
     });
 
-    ntp.parseSettings(true, true); // Parse any setting values.
+    ntp.parseSettings(true); // Parse any setting values.
 
     document.getElementById("bookBrowser").addEventListener("wheel", ntp.upHierarchy, false);
 
     ntp.openSubPage("img/icons.svg", "icons");
 
+    // Close settings click handler.
     document.body.addEventListener('click', () => {
-        document.body.querySelector('#cmenu').style.display = 'none';
-        document.getElementById('popout').classList.remove('out');
+
+        // Close any context menus.
+        document.body.querySelectorAll('.cmenu').forEach((cmenu) => cmenu.style.display = 'none');
+
+        if (event.target.id === "layout" | event.target.parentElement.id === 'layout') document.getElementById('popout').classList.remove('out');
+    }, false);
+
+    var clearBtn = document.getElementById('clearBookFilter');
+    var bookFilter = document.getElementById("bookFilter");
+
+    // Listener for filter input.
+    bookFilter.addEventListener('input', () => {
+
+        event.currentTarget.style.width = 'unset';
+        event.currentTarget.style.width = event.currentTarget.scrollWidth + 'px';
+
+        if (event.currentTarget.value.length > 1) {
+            ntp.parseBooks(undefined, false, undefined, undefined, event.currentTarget.value);
+            ntp.parentId = '1';
+        }
+        else if (ntp.id !== '1') {
+            ntp.parseBooks(undefined, false);
+        }
+
+        if (event.currentTarget.value.length > 0) clearBtn.style.display = 'unset';
+        else { clearBtn.style.display = 'none';}
     });
+
+    // Clear filter button.
+    clearBtn.addEventListener('click', () => {
+        bookFilter.value = '';
+        ntp.parseBooks(undefined, false);
+        clearBtn.style.display = 'none';
+    });
+
+    // General context menu.
+    document.getElementById("layout").oncontextmenu = (e) => {
+        if (e.target.id === 'layout' | e.target.parentElement.id === 'layout') {
+            ntp.ctxMenu(event, "cfgMenu");
+            return false;
+        }
+    };
 };
 
 
 // Apply settings - parse - boolean, optionally reload books.
-ntp.parseSettings = function (reloadBooks, initializing) {
+ntp.parseSettings = function (reloadBooks) {
 
     //Get stored settings.
     chrome.storage.sync.get(null, (items) => {
@@ -225,7 +333,7 @@ ntp.parseSettings = function (reloadBooks, initializing) {
         ntp.pinned = items.pinned;
 
         // No pinned folder.
-        if (ntp.pinned === "0") {
+        if (ntp.pinned === "0" | !ntp.pinned) {
             document.getElementById("initialTip").style.display = "block";
         }
         else {
@@ -239,35 +347,52 @@ ntp.parseSettings = function (reloadBooks, initializing) {
         if (!items.background) {
             ntp.openSubPage('settings.html', 'popout', () => { ntp.loadSettings(true); });
         }
+        else {
+            try {
 
-        try {
+                // Set whatever is required from the settings recieved.
+                root.style.setProperty("--background", items.background);
 
-            // Set whatever is required from the settings recieved.
-            root.style.setProperty("--background", items.background);
+                root.style.setProperty("--hover", ntp.hexToRGBA(items.hover, items.hoverAlpha));
 
-            root.style.setProperty("--hover", ntp.hexToRGBA(items.hover, items.hoverAlpha));
+                root.style.setProperty("--control", ntp.hexToRGBA(items.control, items.controlAlpha));
 
-            root.style.setProperty("--control", ntp.hexToRGBA(items.control, items.controlAlpha));
+                root.style.setProperty("--foreground", ntp.hexToRGBA(items.foreground, items.foregroundAlpha));
 
-            root.style.setProperty("--foreground", ntp.hexToRGBA(items.foreground, items.foregroundAlpha));
+                root.style.setProperty("--folder", ntp.hexToRGBA(items.folder, items.folderAlpha));
 
-            root.style.setProperty("--folder", ntp.hexToRGBA(items.folder, items.folderAlpha));
 
-            root.style.setProperty("--iconSize", items.iconSize + 'px');
+                root.style.setProperty("--viewWidth", items.viewWidth + 'vw');
 
-            root.style.setProperty("--viewWidth", items.viewWidth + 'vw');
+                ntp.hidePinned = items.hidePinned === undefined ? false : items.hidePinned;
 
-            ntp.hidePinned = items.hidePinned;
+                ntp.savePosition = items.savePosition === undefined ? false : items.savePosition;
 
-            ntp.savePosition = items.savePosition;
+                document.title = items.cfgTitle;
+
+                ntp.cfgAnimate = items.cfgAnimate === undefined ? false : items.cfgAnimate;
+            }
+            catch (e) { console.log(e); }
         }
-        catch (e) { console.log(e); }
+
 
         if (reloadBooks) {
 
-            // Parse the initial book set, depending on positionRecall.
+            // Parse the initial book set, depending on savePosition.
             ntp.savePosition === true ? ntp.parseBooks(undefined, false, items.folderId) : ntp.parseBooks();
         }
+    });
+
+    // Get images - need to be stored locally.
+    chrome.storage.local.get(null, (items) => {
+
+        if (items.cfgBgImage) {
+            document.documentElement.style.setProperty("--backgroundImage", "url('" + items.cfgBgImage + "')");
+        }
+        else {
+            document.documentElement.style.setProperty("--backgroundImage", 'none');
+        }
+
     });
 };
 

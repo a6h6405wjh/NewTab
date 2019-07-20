@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+
+
+        #settings {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            grid-row-gap: 1.5rem;
+            grid-column-gap: 1rem;
+            align-items: center;
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        #settings input {
+            height: 1.5rem;
+        }
+
+        #settings input:not([type=color]):not([type=number]) {
+            padding: .5rem;
+        }
+
+        #settings input[type=color] {
+            height: 1.5rem;
+            width: 2rem;
+            padding: 0;
+            border: none;
+        }
+
+
+        #settings input[type=color]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        #settings input[type=color]::-webkit-color-swatch {
+            border: 1px solid var(--controlBorder);
+        }
+                    
+
+
+        h1 + hr {
+            grid-column: 2 / span 3;
+            width: -webkit-fill-available;
+            opacity: .75;
+        }
+
+        h3
+        {
+            margin: 0;
+
+        }
+
+        #popout a,
+        #popout a:visited {
+            color: hsl(210,90%, 50%);
+        }
+
+        .cfgFoot {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            box-sizing: content-box;
+            margin: 2rem;
+        }
+
+        .fileBtnWrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .fileBtn {
+            padding: .25rem .5rem;
+            cursor: pointer;
+        }
+
+        .fileBtnWrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        #popout .xBtn 
+        {
+            color: black;
+        }
+
+        #popout .xBtn:hover {
+            color: tomato;
+        }
+
+        .gBar {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: .75rem;
+        }
+
+        .gPick
+        {
+            -webkit-appearance: sliderthumb-horizontal;
+            position: absolute;
+        }
+
+        .gradientControls > * 
+        {
+            display: flex;
+            align-items: center;
+        }
+
+        #settings *:not(input)
+        {
+            user-select:none;
+        }
+
+        input[type=radio]:not(:first-child) {
+            margin-left: 1rem;
+        }
+
+        .noDisplay
+        {
+            display: none !important;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div id="settings">
+
+        <a href="#" id="closeSettings" style="grid-column: 4; justify-self: flex-end; align-self: center; font-size: 1.25rem; color: tomato;" title="Close settings">&#10006;</a>
+
+        <h1>Behaviour</h1>
+        <hr style="grid-column: 2 / span 3; grid-row: 2;" />
+
+        <h3>Pinned Folder</h3>
+        <span style="grid-column: 2 / span 3; justify-self: flex-end; display: flex; align-items: center;">
+            <input type="checkbox" class="save" checked id="hidePinned" value="true" style="margin-right: 1rem;">
+            <label>Hide from bookmarks</label>
+        </span>
+
+
+        <h3>Save Position</h3>
+
+        <span style="grid-column: 2 / span 3; justify-self: flex-end; display: flex; align-items: center;">
+            <input type="checkbox" class="save" id="savePosition" style="margin-right: 1rem;">
+            <label>Reload last folder</label>
+        </span>
+
+        <h3>Animation</h3>
+
+        <span style="grid-column: 2 / span 3; justify-self: flex-end; display: flex; align-items: center;">
+            <input id="cfgAnimate" class="save" checked type="checkbox" style="grid-column: 3 / span 2; margin-right: 1rem;" />
+            <label>Animated transitions</label>
+        </span>
+
+        <h1 style="margin-top: 2rem;">Appearance</h1>
+        <hr style="margin-top: 2rem;" />
+
+        <h3 style="grid-column: 1;">Background</h3>
+
+        <div style="grid-column: 2 / span 3; display: flex; align-items: center; justify-content: space-around;">
+            <span style="display: flex; align-items: center;"><input type="radio" checked name="cfgBgOpt" value="cfgOptColorFill">Color</span>
+            <span style="display: flex; align-items: center;"><input type="radio" name="cfgBgOpt" value="cfgOptGradientFill">Gradient</span>
+            <span style="display: flex; align-items: center;"><input type="radio" name="cfgBgOpt" value="cfgOptImage">Image</span>
+        </div>
+
+
+        <div id="cfgOptColorFill" style="justify-self: center; display: flex; align-items:center; grid-column: 1 / span 4;">
+            <label style="margin-right: 1rem;">Color</label>
+            <input type="color" id="cfgColorFill" value="#272E35" />
+        </div>
+
+        <div id="cfgOptImage" class="fileBtnWrapper" style="justify-self: center; display: flex; align-items:center; grid-column: 1 / span 4;">
+            <a class="fileBtn">Choose Image</a>
+            <input type="file" class="save" id="cfgImage" value="" />
+        </div>
+
+        <div style="grid-column: 1 / span 4;" class="gPicker" id="cfgOptGradientFill">
+            <div style="display: flex; align-items: center; background: linear-gradient(to right, #272E35 0%, blue 100%); margin-bottom: .5rem; margin-top: 1rem; width: -webkit-fill-available;" class="gBar" id="gPickContainer">
+
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3,1fr); grid-column-gap: 1rem; align-items: center; margin-top: 2rem; margin-bottom: 1.5rem;" class="gradientControls">
+                <div>
+                    <input type="color" id="gPickColor" value="#FFFFFF" />
+                    <a id="clearColor" class="fileBtn xBtn" style="margin-left: .225rem;">&#10006;</a>
+                </div>
+                <div style="">
+                    <label style="margin-right: 1rem;">Position</label>
+                    <input type="number" id="gPickPosition" value="0" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+                </div>
+
+                <div style="justify-self: flex-end;">
+                    <label style="margin-right: 1rem;">Angle</label>
+                    <input type="number" id="gAngle" value="0" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+                </div>
+
+            </div>
+        </div>
+
+        <h3 style="grid-column: 1;">Hover</h3>
+        <input type="color" id="hover" value="#FFFFFF" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" class="save" id="hoverAlpha" value="10" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+        </div>
+
+        <h3 style="grid-column: 1;">Controls</h3>
+        <input type="color" id="control" value="#000000" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" class="save" id="controlAlpha" value="15" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+        </div>
+
+
+        <h3>Text</h3>
+        <input type="color" id="foreground" value="#FFFFFF" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" class="save" id="foregroundAlpha" value="90" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+        </div>
+
+        <h3>Folder</h3>
+        <input type="color" id="folder" value="#FCC84F" />
+        <div style="justify-self: flex-end; display: flex; align-items:center; grid-column: 3 / span 2;">
+            <label style="margin-right: 1rem;">Opacity</label>
+            <input type="number" class="save" id="folderAlpha" value="100" min="0" max="100" style="width: 3.5rem; justify-self: flex-end;" />
+        </div>
+
+        <h3>Viewport Width</h3>
+        <div style="grid-column: 4; justify-self: flex-end; display: flex; align-items: center;">
+            <input type="number" class="save" id="viewWidth" value="66.66" style="width: 5rem; margin-right: .5rem;" />
+            <span> %</span>
+        </div>
+
+        <h3>Title</h3>
+        <input id="cfgTitle" class="save" value="Essential Tab" style="grid-column: 3 / span 2;" />
+
+    </div>
+    <div class="cfgFoot">
+        <a href="#" id="resetDefault" >Reset to default</a>
+    </div>
+</body>
+</html>
